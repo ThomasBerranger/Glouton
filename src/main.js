@@ -4,8 +4,6 @@ import './assets/color.css';
 import {createApp} from 'vue';
 import App from './App.vue';
 import router from './router';
-import { initializeApp } from "firebase/app";
-import firebaseConfig from './config/firebase';
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {
@@ -21,8 +19,6 @@ import moment from "moment";
 import 'moment/locale/fr';
 import {faFileLines} from "@fortawesome/free-regular-svg-icons";
 import store from "@/assets/store";
-
-initializeApp(firebaseConfig);
 
 library.add(faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight, faUser, faCheck, faXmark, faCircleNotch, faTrash, faPlus, faFileLines, faArrowLeftLong);
 

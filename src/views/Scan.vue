@@ -4,15 +4,11 @@ import router from "@/router";
 import axios from "axios";
 import moment from "moment";
 import {Html5Qrcode, Html5QrcodeScanner} from 'html5-qrcode';
-import {getAuth} from 'firebase/auth';
-import {getApp} from "firebase/app";
-import {getFirestore, collection, addDoc, query, where, getDocs} from 'firebase/firestore';
 import ScoresValue from "@/components/ScoresValue.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
-import {add} from "@/functions/product";
+// import {add} from "@/functions/product";
 import {renameScanTexts} from "@/functions/scan";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import logger from "@fortawesome/vue-fontawesome/src/logger";
 import store from "@/assets/store";
 
 let scanActive = ref(true);
@@ -93,41 +89,41 @@ function stopCameraScan() {
 }
 
 async function scanSuccess(decodedText) {
-  const db = getFirestore(getApp());
-  const q = query(
-      collection(db, "products"),
-      where("user", "==", getAuth().currentUser.uid),
-      where('code', '==', decodedText)
-  );
-  const querySnapshot = await getDocs(q);
-
-  if (querySnapshot.docs[0]) {
-    await router.push('/product/' + querySnapshot.docs[0].id);
-  } else {
-    axios
-        .get(`https://world.openfoodfacts.net/api/v2/product/${decodedText}?fields=product_name,nutriscore_data,ecoscore_data,selected_images,generic_name_fr,nova_group`)
-        .then(response => {
-          product.value.code = decodedText;
-          product.value.name = response.data.product.product_name;
-          product.value.nutriscore = response.data.product.nutriscore_data.grade ?? '';
-          product.value.ecoscore = response.data.product.ecoscore_data.grade ?? '';
-          product.value.novagroup = response.data.product.nova_group ?? '';
-          product.value.description = response.data.product.generic_name_fr ? response.data.product.generic_name_fr.charAt(0).toUpperCase() + response.data.product.generic_name_fr.slice(1).toLowerCase() : '';
-
-          for (const [key, value] of Object.entries(response.data.product.selected_images.front.display)) {
-            availableImages.value.push(value);
-          }
-
-          product.value.image = availableImages.value ? availableImages.value[0] : '';
-
-          scanActive.value = false;
-          scanIssue.value.display = false;
-        })
-        .catch(error => {
-          scanIssue.value.display = true;
-          scanIssue.value.message = 'Produit inconnu';
-        });
-  }
+  // const db = getFirestore(getApp());
+  // const q = query(
+  //     collection(db, "products"),
+  //     where("user", "==", getAuth().currentUser.uid),
+  //     where('code', '==', decodedText)
+  // );
+  // const querySnapshot = await getDocs(q);
+  //
+  // if (querySnapshot.docs[0]) {
+  //   await router.push('/product/' + querySnapshot.docs[0].id);
+  // } else {
+  //   axios
+  //       .get(`https://world.openfoodfacts.net/api/v2/product/${decodedText}?fields=product_name,nutriscore_data,ecoscore_data,selected_images,generic_name_fr,nova_group`)
+  //       .then(response => {
+  //         product.value.code = decodedText;
+  //         product.value.name = response.data.product.product_name;
+  //         product.value.nutriscore = response.data.product.nutriscore_data.grade ?? '';
+  //         product.value.ecoscore = response.data.product.ecoscore_data.grade ?? '';
+  //         product.value.novagroup = response.data.product.nova_group ?? '';
+  //         product.value.description = response.data.product.generic_name_fr ? response.data.product.generic_name_fr.charAt(0).toUpperCase() + response.data.product.generic_name_fr.slice(1).toLowerCase() : '';
+  //
+  //         for (const [key, value] of Object.entries(response.data.product.selected_images.front.display)) {
+  //           availableImages.value.push(value);
+  //         }
+  //
+  //         product.value.image = availableImages.value ? availableImages.value[0] : '';
+  //
+  //         scanActive.value = false;
+  //         scanIssue.value.display = false;
+  //       })
+  //       .catch(error => {
+  //         scanIssue.value.display = true;
+  //         scanIssue.value.message = 'Produit inconnu';
+  //       });
+  // }
 }
 
 async function saveProduct() {

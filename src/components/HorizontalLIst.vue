@@ -1,26 +1,26 @@
 <script setup>
 import {RouterLink} from "vue-router";
-import {getNearestExpirationTimestampDate} from "@/functions/product";
+// import {getNearestExpirationTimestampDate} from "@/functions/product";
 import moment from "moment";
 
 const props = defineProps(['products']);
 
-function getColor(product) {
-  return getNearestExpirationTimestampDate(product) <= moment().add(3, 'days').valueOf() ? 'red' : 'green';
-}
+// function getColor(product) {
+//   return getNearestExpirationTimestampDate(product) <= moment().add(3, 'days').valueOf() ? 'red' : 'green';
+// }
 
 function getTimeLeftForHuman(product) {
-  const nearestExpirationTimestampDate = getNearestExpirationTimestampDate(product);
-
-  let humanMessage = `${moment(nearestExpirationTimestampDate).startOf('day').from(moment().startOf('day'))}`;
-
-  if (moment(nearestExpirationTimestampDate).startOf('day').valueOf() === moment().startOf('day').valueOf()) {
-    humanMessage = 'aujourd\'hui';
-  } else if (moment(nearestExpirationTimestampDate).startOf('day').valueOf() === moment().startOf('day').add(1, 'day').valueOf()) {
-    humanMessage = 'demain';
-  }
-
-  return humanMessage[0].toUpperCase() + humanMessage.substring(1);
+  // const nearestExpirationTimestampDate = getNearestExpirationTimestampDate(product);
+  //
+  // let humanMessage = `${moment(nearestExpirationTimestampDate).startOf('day').from(moment().startOf('day'))}`;
+  //
+  // if (moment(nearestExpirationTimestampDate).startOf('day').valueOf() === moment().startOf('day').valueOf()) {
+  //   humanMessage = 'aujourd\'hui';
+  // } else if (moment(nearestExpirationTimestampDate).startOf('day').valueOf() === moment().startOf('day').add(1, 'day').valueOf()) {
+  //   humanMessage = 'demain';
+  // }
+  //
+  // return humanMessage[0].toUpperCase() + humanMessage.substring(1);
 }
 </script>
 

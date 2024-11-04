@@ -3,9 +3,7 @@ import {useRoute} from "vue-router";
 import router from "@/router";
 import {onMounted, ref, watch} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {getApp} from "firebase/app";
-import {doc, getDoc, getFirestore} from "firebase/firestore";
-import {update} from "@/functions/product";
+// import {update} from "@/functions/product";
 import moment from "moment";
 import EatButton from "@/components/EatButton.vue";
 import ScoresValue from "@/components/ScoresValue.vue";
@@ -13,7 +11,6 @@ import NotificationContainer from "@/components/Notification/NotificationContain
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
 import SuppressionContainer from "@/components/Suppression/SuppressionContainer.vue";
 
-const db = getFirestore(getApp());
 const route = useRoute();
 
 let productId = ref('');
@@ -25,14 +22,14 @@ let selectedExpirationDate = ref({key: null, value: null});
 let notification = ref({show: false, message: '', timeout: 3000});
 let suppression = ref({show: false, message: ''});
 
-onMounted(async () => {
-  getDoc(doc(db, "products", productId)).then((data) => {
-    product.value = {...data.data(), id: data.id};
-  }).then(() => {
-    suppression.value.message = `La suppresion de ${product.value.name} sera définitive.`;
-    suppression.value.product = {'id': product.value.id};
-  })
-});
+// onMounted(async () => {
+//   getDoc(doc(db, "products", productId)).then((data) => {
+//     product.value = {...data.data(), id: data.id};
+//   }).then(() => {
+//     suppression.value.message = `La suppresion de ${product.value.name} sera définitive.`;
+//     suppression.value.product = {'id': product.value.id};
+//   })
+// });
 
 watch(product, async () => {
   await update(product.value);

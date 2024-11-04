@@ -1,6 +1,6 @@
 <script setup>
 import router from "@/router";
-import {remove} from "@/functions/product";
+// import {remove} from "@/functions/product";
 
 const props = defineProps(['suppression']);
 const emit = defineEmits(['close']);

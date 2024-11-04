@@ -1,6 +1,6 @@
-import {createRouter, createWebHistory} from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/Home.vue';
-import {getAuth, onAuthStateChanged} from 'firebase/auth';
+import store from "@/assets/store";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,7 +8,7 @@ const router = createRouter({
         {
             path: '/',
             component: HomeView,
-            meta: {requiresAuth: true}
+            meta: { requiresAuth: true }
         },
         {
             path: '/scan',
@@ -16,7 +16,7 @@ const router = createRouter({
             // this generates a separate chunk (About.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
             component: () => import('@/views/Scan.vue'),
-            meta: {requiresAuth: true}
+            meta: { requiresAuth: true }
         },
         {
             path: '/login',
@@ -29,17 +29,17 @@ const router = createRouter({
         {
             path: '/account',
             component: () => import('@/views/Authentication/Account.vue'),
-            meta: {requiresAuth: true}
+            meta: { requiresAuth: true }
         },
         {
             path: '/product/:id',
             component: () => import('@/views/Product.vue'),
-            meta: {requiresAuth: true}
+            meta: { requiresAuth: true }
         },
         {
             path: '/shopping-list',
             component: () => import('@/views/ShoppingList.vue'),
-            meta: {requiresAuth: true}
+            meta: { requiresAuth: true }
         },
         {
             path: '/:catchAll(.*)',
@@ -49,29 +49,15 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        try {
-            const user = await new Promise((resolve, reject) => {
-                const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
-                    unsubscribe();
-                    resolve(user);
-                }, reject);
-            });
-
-            if (!user) {
-                next('/login');
-            } else {
-                next();
-            }
-        } catch (error) {
-            console.error("Une erreur s'est produite lors de la vérification de l'authentification :", error);
+        if (store.state.token) {
+            next();
+        } else {
             next('/login');
         }
     } else {
         next();
     }
-
 });
 
 export default router

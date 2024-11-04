@@ -1,10 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import {collection, doc, getDocs, getFirestore, query, updateDoc, where} from "firebase/firestore";
-import {getApp} from "firebase/app";
-import {getAuth} from "firebase/auth";
 import {RouterLink} from "vue-router";
-import {update} from "@/functions/product"
+// import {update} from "@/functions/product"
 import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
 import moment from "moment";
@@ -14,25 +11,23 @@ let productToRefill = ref({});
 let displayDatepicker = ref(false);
 let notification = ref({show: false, message: '', timeout: 3000});
 
-const db = getFirestore(getApp());
-
-onMounted(async () => {
-  getDocs(
-      query(
-          collection(db, "products"),
-          where("user", "==", getAuth().currentUser.uid),
-          where('finishedAt', '!=', null)
-      )
-  ).then((documents) => {
-    documents.forEach((doc) => {
-      products.value.push({...doc.data(), id: doc.id});
-    })
-
-    products.value.sort((a, b) => {
-      return b.finishedAt - a.finishedAt;
-    })
-  });
-});
+// onMounted(async () => {
+//   getDocs(
+//       query(
+//           collection(db, "products"),
+//           where("user", "==", getAuth().currentUser.uid),
+//           where('finishedAt', '!=', null)
+//       )
+//   ).then((documents) => {
+//     documents.forEach((doc) => {
+//       products.value.push({...doc.data(), id: doc.id});
+//     })
+//
+//     products.value.sort((a, b) => {
+//       return b.finishedAt - a.finishedAt;
+//     })
+//   });
+// });
 
 async function removeFromShoppingList(product) {
   product.toPurchase = false;
