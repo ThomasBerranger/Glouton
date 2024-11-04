@@ -1,20 +1,35 @@
 <script setup>
-import {onMounted, ref, watch} from "vue";
-import HorizontalList from "@/components/HorizontalLIst.vue";
-import moment from "moment";
+import { onMounted, ref, watch } from "vue";
+// import HorizontalList from "@/components/HorizontalLIst.vue";
+// import moment from "moment";
 // import {getNearestExpirationTimestampDate} from "@/functions/product";
-import {Carousel, Slide} from 'vue3-carousel';
+// import { Carousel, Slide } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
 import store from "@/assets/store";
+import axios from "axios";
 
-let productsByCategory = ref({
-  week: {slideKey: 0, values: [], loading: true},
-  month: {slideKey: 1, values: [], loading: true},
-  other: {slideKey: 3, values: [], loading: true},
-  finished: {slideKey: 2, values: [], loading: true}
+let products = ref({});
+
+onMounted(async () => {
+  console.log(store.state.token);
+
+  axios.get('https://glouton-fd999217b246.herokuapp.com/products', { headers: { Authorization: `Bearer ${store.state.token}` } })
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Error during poducts fetch:', error);
+    });
 });
 
-const myCarousel = ref(null);
+// let productsByCategory = ref({
+//   week: { slideKey: 0, values: [], loading: true },
+//   month: { slideKey: 1, values: [], loading: true },
+//   other: { slideKey: 3, values: [], loading: true },
+//   finished: { slideKey: 2, values: [], loading: true }
+// });
+
+// const myCarousel = ref(null);
 
 // onMounted(async () => {
 //       // Get all unfinished products
@@ -110,44 +125,42 @@ const myCarousel = ref(null);
 </script>
 
 <template>
-  <h1>Hello world</h1>
+
+
+  <!-- <section class="w-screen flex justify-evenly h-16 fixed z-10 white-background items-center">
+    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(0)"
+      :class="[store.state.activeSlide === 0 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
+      Semaine
+    </button>
+    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(1)"
+      :class="[store.state.activeSlide === 1 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
+      Mois
+    </button>
+    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(2)"
+      :class="[store.state.activeSlide === 2 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
+      Année
+    </button>
+    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(3)"
+      :class="[store.state.activeSlide === 3 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
+      Terminé
+    </button>
+  </section> -->
+
+  <!-- <Carousel ref="myCarousel" :items-to-show="1" @slide-start="handleSlideStart" :modelValue="store.state.activeSlide">
+    <Slide v-for="category in productsByCategory" :key="category.slideKey" v-model="store.state.activeSlide">
+      <HorizontalList :products="category" />
+    </Slide>
+  </Carousel> -->
+
+  <!-- <div class="h-20 w-screen white-background"></div> -->
 </template>
 
-<!--<template>-->
-<!--  <section class="w-screen flex justify-evenly h-16 fixed z-10 white-background items-center">-->
-<!--    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(0)"-->
-<!--            :class="[store.state.activeSlide === 0 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">-->
-<!--      Semaine-->
-<!--    </button>-->
-<!--    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(1)"-->
-<!--            :class="[store.state.activeSlide === 1 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">-->
-<!--      Mois-->
-<!--    </button>-->
-<!--    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(2)"-->
-<!--            :class="[store.state.activeSlide === 2 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">-->
-<!--      Année-->
-<!--    </button>-->
-<!--    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(3)"-->
-<!--            :class="[store.state.activeSlide === 3 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">-->
-<!--      Terminé-->
-<!--    </button>-->
-<!--  </section>-->
-
-<!--  <Carousel ref="myCarousel" :items-to-show="1" @slide-start="handleSlideStart" :modelValue="store.state.activeSlide">-->
-<!--    <Slide v-for="category in productsByCategory" :key="category.slideKey" v-model="store.state.activeSlide">-->
-<!--      <HorizontalList :products="category"/>-->
-<!--    </Slide>-->
-<!--  </Carousel>-->
-
-<!--  <div class="h-20 w-screen white-background"></div>-->
-<!--</template>-->
-
 <style>
-.carousel {
+/* .carousel {
   top: 4vh;
 }
 
 .carousel__slide {
   align-items: flex-start;
-}
+} */
 </style>
