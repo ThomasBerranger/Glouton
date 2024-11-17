@@ -1,4 +1,6 @@
 import moment from "moment/moment";
+import type {Product} from "@/interfaces/product";
+import type {ExpirationDate} from "@/interfaces/expiration-date";
 
 // async function add(product) {
 //     const db = getFirestore(getApp());
@@ -19,8 +21,10 @@ import moment from "moment/moment";
 //     await deleteDoc(doc(db, 'products', product.id));
 // }
 
-// function getNearestExpirationTimestampDate(product) {
-//     return Math.min(...product.expirationDates.map(date => moment(date, 'DD/MM/YYYY').valueOf()));
-// }
+function getNearestExpirationDate(product: Product): ExpirationDate {
+    return product.expirationDates.reduce((nearest: ExpirationDate, current: ExpirationDate) => {
+        return new Date(current.date) < new Date(nearest.date) ? current : nearest;
+    });
+}
 
-// export {add, update, remove, getNearestExpirationTimestampDate};
+export {getNearestExpirationDate};

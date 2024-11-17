@@ -13,14 +13,15 @@ import {
     faChevronDown, faChevronLeft, faChevronRight,
     faChevronUp, faCircleNotch, faPlus, faTrash,
     faUser,
-    faUtensils, faXmark
+    faUtensils, faXmark,
+    faPoo
 } from '@fortawesome/free-solid-svg-icons';
 import moment from "moment";
 import 'moment/locale/fr';
 import {faFileLines} from "@fortawesome/free-regular-svg-icons";
 import store from "@/assets/store";
 
-library.add(faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight, faUser, faCheck, faXmark, faCircleNotch, faTrash, faPlus, faFileLines, faArrowLeftLong);
+library.add(faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight, faUser, faCheck, faXmark, faCircleNotch, faTrash, faPlus, faFileLines, faArrowLeftLong, faPoo);
 
 const app = createApp(App);
 
