@@ -10,8 +10,8 @@ import moment from "moment";
 import type {Product} from "@/interfaces/product";
 import type {Recipe} from "@/interfaces/recipe";
 
-const products = ref<Record<number, Product>>({});
-const recipes = ref<Record<number, Recipe>>({});
+const products = ref<Product[]>([]);
+const recipes = ref<Recipe[]>([]);
 const shoppingListCount = ref<number>(0);
 
 onMounted(async () => {
@@ -43,9 +43,8 @@ onMounted(async () => {
             :alt="product.name"
             class="w-full h-full object-contain"
         />
-        <div class="absolute bottom-0 right-0 p-2 bg-red-300">{{
-            moment(product.expirationDates[0].date).format('d')
-          }}
+        <div class="absolute bottom-0 right-0 p-2 bg-red-300">
+          {{ moment(product.expirationDates[0].date).diff(moment(), 'days') }}
         </div>
       </div>
       <div class="rounded-xl bg-green-200"></div>
