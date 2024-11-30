@@ -7,6 +7,9 @@ export interface Product {
     image: string | undefined;
     finishedAt: string | null;
     addedToListAt: string | null;
+    nutriscore: string | undefined;
+    novagroup: number | undefined;
+    ecoscore: string | undefined;
     expirationDates: ExpirationDate[];
     closestExpirationDate : Date | null;
 }

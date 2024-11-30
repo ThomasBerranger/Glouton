@@ -14,13 +14,17 @@ import {
     faChevronUp, faCircleNotch, faPlus, faTrash,
     faUser,
     faUtensils, faXmark,
-    faPoo
+    faPoo, faFlaskVial, faPenToSquare
 } from '@fortawesome/free-solid-svg-icons';
 import moment from "moment";
 import 'moment/locale/fr';
 import {faFileLines} from "@fortawesome/free-regular-svg-icons";
 
-library.add(faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight, faUser, faCheck, faXmark, faCircleNotch, faTrash, faPlus, faFileLines, faArrowLeftLong, faPoo);
+library.add(
+    faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight,
+    faUser, faCheck, faXmark, faCircleNotch, faTrash, faPlus, faFileLines, faArrowLeftLong, faPoo,
+    faFlaskVial, faPenToSquare
+);
 
 const pinia = createPinia();
 const app = createApp(App);

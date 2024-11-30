@@ -4,6 +4,7 @@ import { VitePWA, VitePWAOptions } from "vite-plugin-pwa"
 import * as path from 'path'
 
 const pwaOptions: Partial<VitePWAOptions> = {
+    base: '/Glouton',
     registerType: 'autoUpdate',
     devOptions: {
         enabled: true
@@ -62,7 +63,7 @@ const config: UserConfig = {
             '@': path.resolve(path.dirname(''), './src')
         }
     },
-    base: '/Glouton/'
+    base: '/Glouton'
 }
 
 export default defineConfig(config)
