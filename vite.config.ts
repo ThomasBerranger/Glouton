@@ -61,7 +61,8 @@ const config: UserConfig = {
         alias: {
             '@': path.resolve(path.dirname(''), './src')
         }
-    }
+    },
+    base: '/Glouton/'
 }
 
 export default defineConfig(config)
