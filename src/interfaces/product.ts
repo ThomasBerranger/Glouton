@@ -8,4 +8,5 @@ export interface Product {
     finishedAt: string | null;
     addedToListAt: string | null;
     expirationDates: ExpirationDate[];
+    closestExpirationDate : Date | null;
 }

@@ -6,7 +6,7 @@ import type {Product} from "@/interfaces/product";
 
 const props = defineProps<{
   products: Product[]
-}>()
+}>();
 
 const productBeforeNow = ref<Product | null>(null);
 const productBeforeNextWeek = ref<Product | null>(null);
@@ -18,7 +18,7 @@ onMounted(() => {
   productBeforeNextWeek.value = findProductBefore(props.products, moment().add(1, 'week').endOf('day'));
   productBeforeNextMonth.value = findProductBefore(props.products, moment().add(1, 'month').endOf('day'));
   productBeforeNextYear.value = findProductBefore(props.products, moment().add(1, 'year').endOf('day'));
-})
+});
 
 function findProductBefore(products: Product[], date: moment.Moment): Product | null {
   for (let i = 0; i < products.length; i++) {
@@ -32,39 +32,34 @@ function findProductBefore(products: Product[], date: moment.Moment): Product | 
 </script>
 
 <template>
-
-  <div class="fixed bottom-20 right-3">
-    <button class="border border-amber-800 rounded-md p-1">
-      Catégories
-      <font-awesome-icon icon="fa-solid fa-poo" class="text-2xl pl-1"/>
-    </button>
-  </div>
-
-  <div class="grid grid-cols-4 gap-1 p-3 mb-5">
+  <div class="grid grid-cols-4 gap-1 p-3 mb-32 text-center">
     <template v-for="product in props.products">
 
-      <div v-if="productBeforeNow === product">
-        <p class="text-center bg-red-300">Trop tard</p>
+      <div v-if="productBeforeNow === product" class="h-24 flex items-center bg-black/20">
+        <p class="w-full">Trop tard</p>
       </div>
 
-      <div v-if="productBeforeNextWeek === product">
-        <p class="text-center bg-red-300">Dans la semaine</p>
+      <div v-if="productBeforeNextWeek === product" class="h-24 flex items-center bg-red-300">
+        <p class="w-full">Dans la semaine</p>
       </div>
 
-      <div v-if="productBeforeNextMonth === product">
-        <p class="text-center bg-red-300">Dans le mois</p>
+      <div v-if="productBeforeNextMonth === product" class="h-24 flex items-center bg-blue-200">
+        <p class="w-full">Dans le mois</p>
       </div>
 
-      <div v-if="productBeforeNextYear === product">
-        <p class="text-center bg-red-300">Dans l'années</p>
+      <div v-if="productBeforeNextYear === product" class="h-24 flex items-center bg-green-200">
+        <p class="w-full">Dans l'années</p>
       </div>
 
-      <div class="border border-1 border-amber-800 text-sm text-center">
-        <p class="font-semibold">{{ product.name }}</p>
-        <br>
-        {{ moment(getNearestExpirationDate(product).date).format('DD/MM/YYYY') }}
-      </div>
+      <router-link :to="{name: 'product.details', params: { id: product.id }}"
+                   class="border border-1 border-amber-800 h-24 relative p-2">
+        <img
+            :src="product.image"
+            :alt="product.name"
+            class="w-full h-full object-contain"
+        />
+      </router-link>
+
     </template>
   </div>
-
 </template>

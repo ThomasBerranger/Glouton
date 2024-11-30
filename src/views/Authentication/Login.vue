@@ -1,34 +1,34 @@
-<script setup>
-import { ref } from 'vue';
+<script lang="ts" setup>
+import {ref} from 'vue';
 import axios from 'axios';
 import router from '@/router';
-import { RouterLink } from "vue-router";
-import store from "@/assets/store";
+import {RouterLink} from "vue-router";
+import {useTokenStore} from '@/stores/token';
 
 const email = ref('');
 const password = ref('');
+const tokenStore = useTokenStore();
 
 const login = () => {
   axios.post('https://glouton-fd999217b246.herokuapp.com/login', {
     username: email.value,
     password: password.value,
   })
-    .then(response => {
-      store.commit('changeToken', response.data.token);
-      router.push('/');
-    })
-    .catch(error => {
-      console.error('Error during login:', error);
-    });
+      .then(response => {
+        tokenStore.setToken(response.data.token)
+        router.push('/');
+      })
+      .catch(error => {
+        console.error('Error during login:', error);
+      });
 }
 </script>
 
 <template>
-
   <div class="w-screen screen-height flex flex-1 flex-col justify-center">
 
     <div class="w-full">
-      <img class="mx-auto h-20 w-auto" src="/public/logo.png" alt="Glouton" />
+      <img class="mx-auto h-20 w-auto" src="/public/logo.png" alt="Glouton"/>
       <h2 class="mt-5 text-center text-2xl leading-9 tracking-tight text-gray-900">Connexion</h2>
     </div>
 
@@ -39,7 +39,7 @@ const login = () => {
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
           <div class="mt-2">
             <input v-model="email" id="email" name="email" type="email" autocomplete="email" required=""
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm px-2" />
+                   class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm px-2"/>
           </div>
         </div>
 
@@ -49,7 +49,7 @@ const login = () => {
           </div>
           <div class="mt-2">
             <input v-model="password" id="password" name="password" type="password" autocomplete="current-password"
-              required="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm px-2" />
+                   required="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm px-2"/>
           </div>
         </div>
 
@@ -65,5 +65,4 @@ const login = () => {
     </div>
 
   </div>
-
 </template>
