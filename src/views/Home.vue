@@ -46,12 +46,10 @@ onMounted(async () => {
           {{ moment(product.expirationDates[0].date).diff(moment(), 'days') }}
         </div>
       </router-link>
-      <div class="rounded-xl bg-green-200"></div>
-      <div class="rounded-xl bg-green-200"></div>
 
       <router-link
           to="/products"
-          class="col-span-2 flex justify-center items-center relative rounded-xl border border-1 border-gray-200 text-white font-semibold bg-slate-400"
+          class="col-span-1 flex justify-center items-center relative rounded-xl border border-1 border-gray-200 text-white font-semibold bg-green-600 opacity-80"
       >
         Tout voir
       </router-link>

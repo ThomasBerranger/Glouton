@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-  <footer class="w-full flex justify-evenly items-center bg-white">
+  <footer class="w-full flex justify-evenly items-center bg-white z-50">
     <router-link to="/" class="text-2xl">
       <font-awesome-icon icon="fa-solid fa-utensils"/>
     </router-link>
