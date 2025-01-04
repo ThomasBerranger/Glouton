@@ -11,5 +11,6 @@ export interface Product {
     novagroup: number | undefined;
     ecoscore: string | undefined;
     expirationDates: ExpirationDate[];
+    scanned: boolean,
     closestExpirationDate : Date | null;
 }

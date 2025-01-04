@@ -3,27 +3,41 @@
 import {onMounted, ref} from "vue";
 import {useTokenStore} from "@/stores/token.ts";
 import axios from "axios";
+import moment from "moment/moment";
 import type {Product} from "@/interfaces/product.ts";
-import Confirmation from "@/components/Confirmation.vue";
+import {getProductUrlByType, PRODUCT_SHOPPING_LIST_URL} from "@/constants/api.ts"
+import Datepicker from "@/components/Datepicker.vue";
 
 const tokenStore = useTokenStore();
 
 const shoppingListProducts = ref<Product[]>([]);
-const productToDelete = ref<Product | null>(null);
+const productToRemove = ref<Product | null>(null);
 
-const closeConfirmation = (isRemoved: boolean) => {
-  if (isRemoved) {
-    shoppingListProducts.value = shoppingListProducts.value.filter(product => product.id !== productToDelete.value?.id);
+const remove = (expirationDate: string | null): void => {
+  if (productToRemove.value && expirationDate) {
+    axios.patch(
+        `${getProductUrlByType(productToRemove.value)}${productToRemove.value.id}`,
+        {
+          addedToListAt: null,
+          expirationDates: [{
+            date: expirationDate
+          }]
+        },
+        {headers: {Authorization: `Bearer ${tokenStore.token}`}}
+    )
+        .then(response => {
+          shoppingListProducts.value = shoppingListProducts.value.filter(product => product.id !== response.data.id);
+        })
   }
-  productToDelete.value = null;
+
+  productToRemove.value = null;
 };
 
-onMounted(async () => {
+onMounted((): void => {
   axios.get(
-      "https://glouton-fd999217b246.herokuapp.com/products/shopping-list",
+      `${PRODUCT_SHOPPING_LIST_URL}`,
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
-  ).then(response => shoppingListProducts.value = response.data)
-      .catch(error => console.error("Shopping list error:", error));
+  ).then(response => shoppingListProducts.value = response.data);
 });
 </script>
 
@@ -32,10 +46,10 @@ onMounted(async () => {
     <ul>
       <li v-for="product in shoppingListProducts">
         {{ product.name }}
-        <button class="btn px-2 border border-red-400 rounded" @click="productToDelete = product">supprimer</button>
+        <button class="btn px-2 border border-red-400 rounded" @click="productToRemove = product">supprimer</button>
       </li>
     </ul>
 
-    <Confirmation v-if="productToDelete" :productToDelete="productToDelete" @closeConfirmation="closeConfirmation"/>
+    <Datepicker v-if="productToRemove" :date="moment().format('L')" @update-date="remove"/>
   </div>
 </template>
