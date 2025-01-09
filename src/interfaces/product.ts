@@ -7,6 +7,7 @@ export interface Product {
     image: string | undefined;
     finishedAt: string | null;
     addedToListAt: string | null;
+    barcode: string | undefined;
     nutriscore: string | undefined;
     novagroup: number | undefined;
     ecoscore: string | undefined;
