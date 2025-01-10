@@ -12,6 +12,7 @@ import Nutriscore from "@/components/Product/Scores/Nutriscore.vue";
 import Novagroup from "@/components/Product/Scores/Novagroup.vue";
 import Ecoscore from "@/components/Product/Scores/Ecoscore.vue";
 import Confirmation from "@/components/Confirmation.vue";
+import NutritionalDetails from "@/components/Product/NutritionalDetails.vue";
 
 const route = useRoute();
 const tokenStore = useTokenStore();
@@ -19,12 +20,7 @@ const tokenStore = useTokenStore();
 const productId = route.params.id as string;
 const product = ref<Product>({} as Product);
 const isToRemove = ref<boolean>(false);
-
-onMounted((): void => {
-  axios.get(`${PRODUCT_URL}${productId}`, {
-    headers: {Authorization: `Bearer ${tokenStore.token}`},
-  }).then(response => product.value = response.data);
-});
+const showNutritionalDetails = ref<boolean>(false);
 
 const addToShoppingList = (): void => {
   axios.patch(
@@ -48,12 +44,19 @@ const remove = (isRemoved: boolean): void => {
     isToRemove.value = false;
   }
 };
+
+onMounted((): void => {
+  axios.get(`${PRODUCT_URL}${productId}`, {
+    headers: {Authorization: `Bearer ${tokenStore.token}`},
+  }).then(response => product.value = response.data);
+});
 </script>
 
 <template>
   <div class="w-screen p-2">
     <p>{{ product.id }}</p>
     <p>Scanned : {{ product.scanned }}</p>
+    <p v-if="product.scanned">Barcode : {{ product.barcode }}</p>
     <p>{{ product.name }}</p>
     <p>{{ product.description }}</p>
 
@@ -85,12 +88,14 @@ const remove = (isRemoved: boolean): void => {
     </div>
 
     <div class="w-full flex justify-evenly text-3xl mt-5">
-      <font-awesome-icon icon="fa-solid fa-flask-vial"/>
+      <font-awesome-icon v-if="product.scanned" @click="showNutritionalDetails = true" icon="fa-solid fa-flask-vial"/>
       <font-awesome-icon @click="isToRemove = true" icon="fa-solid fa-trash"/>
       <font-awesome-icon @click="addToShoppingList" icon="fa-solid fa-cart-shopping"
                          :class="{ 'text-green-700' : product.addedToListAt }"/>
       <font-awesome-icon icon="fa-solid fa-pen-to-square"/>
     </div>
+
+    <NutritionalDetails v-if="showNutritionalDetails" @closeNutritionalDetails="showNutritionalDetails = !showNutritionalDetails" :product="product" />
 
     <Confirmation v-if="product && isToRemove" @closeConfirmation="remove"
                   :product="product"
