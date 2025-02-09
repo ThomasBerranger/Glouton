@@ -9,11 +9,14 @@
     "deploy": "sh deploy.sh"
   },
   "dependencies": {
+    "@ericblade/quagga2": "^1.8.4",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
     "axios": "^1.7.4",
     "chart.js": "^4.4.7",
     "html5-qrcode": "^2.3.8",

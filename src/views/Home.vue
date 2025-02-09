@@ -61,6 +61,13 @@ onMounted(async () => {
           - {{ recipe.name }} : {{ recipe.duration }}
         </li>
       </ul>
+
+      <router-link to="/scan">
+        <section>Scan 1</section>
+      </router-link>
+      <router-link to="/scan-2">
+        <section>Scan 2</section>
+      </router-link>
     </section>
 
     <router-link to="/shopping-list" class="focus:outline-none tap-highlight-transparent">
