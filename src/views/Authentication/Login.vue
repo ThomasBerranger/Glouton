@@ -62,6 +62,13 @@ const login = () => {
         </div>
       </form>
 
+      <router-link to="/scan">
+        <button class="btn p-2 border border-red-600 m-2">Scan 1</button>
+      </router-link>
+      <router-link to="/scan2">
+        <button class="btn p-2 border border-red-600 m-2">Scan 2</button>
+      </router-link>
+
     </div>
 
   </div>
