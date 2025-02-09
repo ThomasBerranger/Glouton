@@ -10,7 +10,7 @@ const password = ref('');
 const tokenStore = useTokenStore();
 
 const onSubmit = () => {
-  axios.post('https://glouton-fd999217b246.herokuapp.com/register', {
+  axios.post('http://127.0.0.1:8000/register', {
     email: email.value,
     password: password.value,
   })
