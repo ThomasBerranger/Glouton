@@ -10,7 +10,7 @@ const password = ref('');
 const tokenStore = useTokenStore();
 
 const login = () => {
-  axios.post('https://glouton-fd999217b246.herokuapp.com/login', {
+  axios.post('http://127.0.0.1:8000/login', {
     username: email.value,
     password: password.value,
   })

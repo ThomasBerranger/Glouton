@@ -13,18 +13,18 @@ const recipes = ref<Recipe[]>([]);
 const shoppingListCount = ref<number>(0);
 
 onMounted(async () => {
-  axios.get("https://glouton-fd999217b246.herokuapp.com/products?limit=8", {
+  axios.get("http://127.0.0.1:8000/products?limit=8", {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => products.value = response.data)
       .catch(error => console.error("Products error:", error));
 
-  axios.get("https://glouton-fd999217b246.herokuapp.com/recipes", {
+  axios.get("http://127.0.0.1:8000/recipes", {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => recipes.value = response.data)
       .catch(error => console.error("Recipes error:", error));
 
   axios.get(
-      "https://glouton-fd999217b246.herokuapp.com/products/shopping-list?count=true",
+      "http://127.0.0.1:8000/products/shopping-list?count=true",
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   ).then(response => shoppingListCount.value = response.data)
       .catch(error => console.error("Shopping list error:", error));

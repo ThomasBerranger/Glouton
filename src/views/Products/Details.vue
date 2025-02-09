@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 
 import {useRoute} from "vue-router";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useTokenStore} from "@/stores/token.ts";
 import axios from "axios";
 import router from '@/router';
@@ -21,6 +21,7 @@ const productId = route.params.id as string;
 const product = ref<Product>({} as Product);
 const isToRemove = ref<boolean>(false);
 const showNutritionalDetails = ref<boolean>(false);
+const isToEdit = ref<boolean>(false);
 
 const addToShoppingList = (): void => {
   axios.patch(
@@ -45,6 +46,35 @@ const remove = (isRemoved: boolean): void => {
   }
 };
 
+const edit = (): void => {
+  axios.patch(
+      `${getProductUrlByType(product.value)}${product.value.id}`,
+      {name: product.value.name, description: product.value.description},
+      {headers: {Authorization: `Bearer ${tokenStore.token}`}}
+  )
+      .then(response => {
+        product.value = response.data;
+        isToEdit.value = false;
+      })
+};
+
+const removeExpirationDate = (index: number | null = null): void => {
+  if (index !== null) {
+    product.value.expirationDates.splice(index, 1);
+  } else {
+    product.value.expirationDates = [];
+  }
+
+  axios.patch(
+      `${getProductUrlByType(product.value)}${product.value.id}`,
+      {expirationDates: product.value.expirationDates},
+      {headers: {Authorization: `Bearer ${tokenStore.token}`}}
+  )
+      .then(response => {
+        product.value = response.data;
+      });
+}
+
 onMounted((): void => {
   axios.get(`${PRODUCT_URL}${productId}`, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
@@ -54,26 +84,23 @@ onMounted((): void => {
 
 <template>
   <div class="w-screen p-2">
-    <p>{{ product.id }}</p>
-    <p>Scanned : {{ product.scanned }}</p>
-    <p v-if="product.scanned">Barcode : {{ product.barcode }}</p>
-    <p>{{ product.name }}</p>
-    <p>{{ product.description }}</p>
-
     <img
         :src="product.image"
         :alt="product.name"
-        class="w-full h-20 object-contain"
+        class="w-full h-48 object-contain"
     />
 
-    <p>Finished at : {{ product.finishedAt ?? '/' }}</p>
-    <p>Added to the shopping list : {{ product.addedToListAt ?? '/' }}</p>
+    <p v-if="!isToEdit" class="text-center mt-2">{{ product.name }}</p>
+    <input v-else v-model="product.name" class="w-full mt-2 border text-center"/>
+    <p v-if="!isToEdit" class="text-center">{{ product.description ?? 'Aucune description' }}</p>
+    <input v-else v-model="product.description" class="w-full border text-center" placeholder="Aucune description"/>
 
     <p class="font-semibold pt-3 pb-1">Expiration dates</p>
-    <p v-for="expirationDate in product.expirationDates">{{
-        moment(expirationDate.date).format('DD/MM/YYYY')
-      }}
+    <p v-for="(expirationDate, index) in product.expirationDates">
+      {{ moment(expirationDate.date).format('DD/MM/YYYY') }}
+      <button @click="removeExpirationDate(index)" class="btn border border-red-600 px-2">remove</button>
     </p>
+    <button @click="removeExpirationDate()" class="btn border border-red-600 px-2">Tout mangé</button>
 
     <p class="font-semibold pt-3 pb-1">Recettes associées</p>
     <p>?</p>
@@ -92,10 +119,13 @@ onMounted((): void => {
       <font-awesome-icon @click="isToRemove = true" icon="fa-solid fa-trash"/>
       <font-awesome-icon @click="addToShoppingList" icon="fa-solid fa-cart-shopping"
                          :class="{ 'text-green-700' : product.addedToListAt }"/>
-      <font-awesome-icon icon="fa-solid fa-pen-to-square"/>
+      <font-awesome-icon v-if="!isToEdit" @click="isToEdit = true" icon="fa-solid fa-pen-to-square"/>
+      <font-awesome-icon v-else @click="edit" icon="fa-solid fa-pen-to-square"
+                         :class="{ 'text-green-700' : isToEdit }"/>
     </div>
 
-    <NutritionalDetails v-if="showNutritionalDetails" @closeNutritionalDetails="showNutritionalDetails = !showNutritionalDetails" :product="product" />
+    <NutritionalDetails v-if="showNutritionalDetails"
+                        @closeNutritionalDetails="showNutritionalDetails = !showNutritionalDetails" :product="product"/>
 
     <Confirmation v-if="product && isToRemove" @closeConfirmation="remove"
                   :product="product"
