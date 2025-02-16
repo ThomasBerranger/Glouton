@@ -6,6 +6,7 @@ import moment from "moment";
 import {useTokenStore} from "@/stores/token";
 import type {Product} from "@/interfaces/product";
 import type {Recipe} from "@/interfaces/recipe";
+import {PRODUCT_URL, RECIPE_URL} from "@/constants/api.ts";
 
 const tokenStore = useTokenStore();
 const products = ref<Product[]>([]);
@@ -13,18 +14,18 @@ const recipes = ref<Recipe[]>([]);
 const shoppingListCount = ref<number>(0);
 
 onMounted(async () => {
-  axios.get("http://127.0.0.1:8000/products?limit=8", {
+  axios.get(`${PRODUCT_URL}?limit=8`, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => products.value = response.data)
       .catch(error => console.error("Products error:", error));
 
-  axios.get("http://127.0.0.1:8000/recipes", {
+  axios.get(RECIPE_URL, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => recipes.value = response.data)
       .catch(error => console.error("Recipes error:", error));
 
   axios.get(
-      "http://127.0.0.1:8000/products/shopping-list?count=true",
+      `${PRODUCT_URL}/shopping-list?count=true`,
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   ).then(response => shoppingListCount.value = response.data)
       .catch(error => console.error("Shopping list error:", error));

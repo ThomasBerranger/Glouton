@@ -168,6 +168,7 @@ onMounted((): void => {
 
         <p class="text-xl font-light mt-3">Image (url)</p>
         <input v-model="newProduct.image" class="w-3/4 border border-green-800 rounded px-2 py-1" type="text">
+        <img v-if="newProduct.image" :src="newProduct.image" class="h-32 m-auto" :alt="newProduct.name">
 
         <br>
         <br>

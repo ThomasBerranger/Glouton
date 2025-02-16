@@ -1,10 +1,14 @@
 import type {Product} from '@/interfaces/product.ts'
 
-export const PRODUCT_URL = 'http://127.0.0.1:8000/products/' as const;
-export const PRODUCT_SHOPPING_LIST_URL = 'http://127.0.0.1:8000/products/shopping-list' as const;
+export const SERVER_URL = 'https://glouton-fd999217b246.herokuapp.com';
+
+export const PRODUCT_URL = `${SERVER_URL}/products` as const;
+export const PRODUCT_SHOPPING_LIST_URL = `${SERVER_URL}/products/shopping-list` as const;
 
 export const getProductUrlByType = (product: Product) => {
     return product.scanned ?
-        'http://127.0.0.1:8000/scanned-products' :
-        'http://127.0.0.1:8000/custom-products';
+        `${SERVER_URL}/scanned-products` :
+        `${SERVER_URL}/custom-products`;
 }
+
+export const RECIPE_URL = `${SERVER_URL}/recipes` as const;

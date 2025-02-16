@@ -36,7 +36,7 @@ const addToShoppingList = (): void => {
 
 const remove = (isRemoved: boolean): void => {
   if (isRemoved) {
-    axios.delete(`${PRODUCT_URL}${productId}`, {
+    axios.delete(`${PRODUCT_URL}/${productId}`, {
       headers: {Authorization: `Bearer ${tokenStore.token}`},
     }).then((): void => {
       router.push('/');
@@ -76,7 +76,7 @@ const removeExpirationDate = (index: number | null = null): void => {
 }
 
 onMounted((): void => {
-  axios.get(`${PRODUCT_URL}${productId}`, {
+  axios.get(`${PRODUCT_URL}/${productId}`, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => product.value = response.data);
 });

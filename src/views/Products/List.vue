@@ -5,13 +5,14 @@ import type {Product} from "@/interfaces/product";
 import {useTokenStore} from "@/stores/token";
 import ListByDate from "@/components/Product/ListByDate.vue";
 import ListByCategory from "@/components/Product/ListByCategory.vue";
+import {PRODUCT_URL} from "@/constants/api.ts";
 
 const tokenStore = useTokenStore();
 const products = ref<Product[]>([]);
 const isListByCategoryActive = ref<boolean>(true)
 
 onMounted(async () => {
-  axios.get("https://glouton-fd999217b246.herokuapp.com/products", {
+  axios.get(PRODUCT_URL, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => products.value = response.data)
       .catch(error => console.error("Products error:", error));

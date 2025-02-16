@@ -2,7 +2,7 @@ name: Deploy static content to Pages
 
 on:
   push:
-    branches: ['scan']
+    branches: ['glouton-v2']
 
 permissions:
   contents: read

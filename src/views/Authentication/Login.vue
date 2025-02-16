@@ -4,13 +4,14 @@ import axios from 'axios';
 import router from '@/router';
 import {RouterLink} from "vue-router";
 import {useTokenStore} from '@/stores/token';
+import {SERVER_URL} from "@/constants/api.ts";
 
 const email = ref('');
 const password = ref('');
 const tokenStore = useTokenStore();
 
 const login = () => {
-  axios.post('http://127.0.0.1:8000/login', {
+  axios.post(`${SERVER_URL}/login`, {
     username: email.value,
     password: password.value,
   })
@@ -28,7 +29,7 @@ const login = () => {
   <div class="w-screen screen-height flex flex-1 flex-col justify-center">
 
     <div class="w-full">
-      <img class="mx-auto h-20 w-auto" src="/public/logo.png" alt="Glouton"/>
+      <img class="mx-auto h-20 w-auto" src="/public/logo.png" alt="Glouton logo"/>
       <h2 class="mt-5 text-center text-2xl leading-9 tracking-tight text-gray-900">Connexion</h2>
     </div>
 
