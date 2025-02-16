@@ -25,7 +25,7 @@ const isToEdit = ref<boolean>(false);
 
 const addToShoppingList = (): void => {
   axios.patch(
-      `${getProductUrlByType(product.value)}${product.value.id}`,
+      `${getProductUrlByType(product.value)}/${product.value.id}`,
       {addedToListAt: new Date()},
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   )
@@ -48,7 +48,7 @@ const remove = (isRemoved: boolean): void => {
 
 const edit = (): void => {
   axios.patch(
-      `${getProductUrlByType(product.value)}${product.value.id}`,
+      `${getProductUrlByType(product.value)}/${product.value.id}`,
       {name: product.value.name, description: product.value.description},
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   )
@@ -66,7 +66,7 @@ const removeExpirationDate = (index: number | null = null): void => {
   }
 
   axios.patch(
-      `${getProductUrlByType(product.value)}${product.value.id}`,
+      `${getProductUrlByType(product.value)}/${product.value.id}`,
       {expirationDates: product.value.expirationDates},
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   )

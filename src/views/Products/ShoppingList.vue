@@ -16,7 +16,7 @@ const productToRemove = ref<Product | null>(null);
 const remove = (expirationDate: string | null): void => {
   if (productToRemove.value && expirationDate) {
     axios.patch(
-        `${getProductUrlByType(productToRemove.value)}${productToRemove.value.id}`,
+        `${getProductUrlByType(productToRemove.value)}/${productToRemove.value.id}`,
         {
           addedToListAt: null,
           expirationDates: [{

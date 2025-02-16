@@ -15,7 +15,7 @@ const login = () => {
     password: password.value,
   })
       .then(response => {
-        tokenStore.setToken(response.data.token)
+        tokenStore.setToken(response.data.token);
         router.push('/');
       })
       .catch(error => {
@@ -38,7 +38,7 @@ const login = () => {
         <div>
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
           <div class="mt-2">
-            <input v-model="email" id="email" name="email" type="email" autocomplete="email" required=""
+            <input v-model="email" id="email" name="email" type="email" autocomplete="email" required
                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm px-2"/>
           </div>
         </div>
@@ -49,7 +49,7 @@ const login = () => {
           </div>
           <div class="mt-2">
             <input v-model="password" id="password" name="password" type="password" autocomplete="current-password"
-                   required="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm px-2"/>
+                   required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm px-2"/>
           </div>
         </div>
 

@@ -1,244 +1,195 @@
-<script setup>
-import {computed, onMounted, onUnmounted, ref} from "vue";
-import router from "@/router";
+<script setup lang="ts">
+import {onMounted, ref} from 'vue'
+import {BrowserMultiFormatReader} from '@zxing/browser';
 import axios from "axios";
+import type {Product} from "@/interfaces/product.ts";
+import Ecoscore from "@/components/Product/Scores/Ecoscore.vue";
+import Nutriscore from "@/components/Product/Scores/Nutriscore.vue";
+import Novagroup from "@/components/Product/Scores/Novagroup.vue";
 import moment from "moment";
-import {Html5Qrcode, Html5QrcodeScanner} from 'html5-qrcode';
-import ScoresValue from "@/components/ScoresValue.vue";
-import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
-// import {add} from "@/functions/product";
-import {renameScanTexts} from "@/functions/scan";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import store from "@/assets/store";
+import Datepicker from "@/components/Datepicker.vue";
+import type {ExpirationDate} from "@/interfaces/expiration-date.ts";
+import {getProductUrlByType} from "@/constants/api.ts";
+import {useTokenStore} from "@/stores/token.ts";
+import router from "@/router";
 
-let scanActive = ref(true);
-let scanIssue = ref({display: false, message: ''});
-let displayDatepicker = ref(false);
-let product = ref({expirationDates: [null]});
-let selectedExpirationDate = ref({key: null, value: null});
-let availableImages = ref([]);
+const tokenStore = useTokenStore();
 
-let html5QrCode = null;
-let cameraIds = ref([]);
+const videoRef = ref<HTMLVideoElement | null>(null);
+const codeReader = new BrowserMultiFormatReader();
 
-onMounted(() => {
-  html5QrCode = new Html5Qrcode("qrCodeScanner");
+const newProduct = ref<Product>({} as Product);
+const code = ref<string>('');
+const images = ref<string[]>([]);
 
-  if (store.state.registeredCamera) {
-    Html5Qrcode.getCameras().then(() => {
-      startCamera();
-    });
-  } else {
-    getAvailableCamera();
+const mode = ref<'scanning' | 'found' | 'manual'>('scanning');
+const showDatePicker = ref<boolean>(false);
+
+const startScan = async () => {
+  if (!videoRef.value) return;
+
+  try {
+    const result = await codeReader.decodeOnceFromVideoDevice(
+        undefined, // default camera
+        videoRef.value
+    );
+
+    if (result) {
+      code.value = result.getText();
+      videoRef.value = null;
+      fetchData();
+    }
+  } catch (error) {
+    console.error('Scanning error:', error);
   }
+}
+
+const fetchData = (): void => {
+  if (!code.value) return;
+
+  axios
+      .get(`https://world.openfoodfacts.org/api/v2/product/${code.value}.json?fields=product_name,nutriscore_data,ecoscore_data,selected_images,generic_name_fr,nova_group`)
+      .then(response => {
+        mode.value = 'found';
+        newProduct.value.barcode = code.value;
+        newProduct.value.scanned = true;
+        newProduct.value.name = response.data.product.product_name;
+        newProduct.value.nutriscore = response.data.product.nutriscore_data.grade;
+        newProduct.value.ecoscore = response.data.product.ecoscore_data.grade;
+        newProduct.value.novagroup = response.data.product.nova_group;
+        newProduct.value.description = response.data.product.generic_name_fr ? response.data.product.generic_name_fr.charAt(0).toUpperCase() + response.data.product.generic_name_fr.slice(1).toLowerCase() : '';
+
+        images.value = manageImages(response.data.product.selected_images);
+
+        showDatePicker.value = true;
+      })
+      .catch(error => {
+        mode.value = 'manual';
+        newProduct.value.barcode = code.value;
+        showDatePicker.value = true;
+      })
+}
+
+const manageImages = (availableImages: string[]): string[] => {
+  availableImages = Object.values(availableImages)
+      .map(image => image?.display?.fr)
+      .filter(url => url !== undefined);
+
+  newProduct.value.image = availableImages[0] ?? null;
+
+  return availableImages;
+};
+
+const selectExpirationDate = (expirationDate: string | null): void => {
+  if (!expirationDate) return;
+
+  const newExpirationDate: ExpirationDate = {
+    date: expirationDate
+  };
+
+  newProduct.value.expirationDates = [];
+  newProduct.value.expirationDates.push(newExpirationDate);
+  showDatePicker.value = false;
+};
+
+const submit = (): void => {
+  axios.post(
+      getProductUrlByType(newProduct.value),
+      newProduct.value,
+      {headers: {Authorization: `Bearer ${tokenStore.token}`}}
+  )
+      .then(response => {
+        router.push('/');
+      });
+};
+
+onMounted((): void => {
+  startScan();
 });
-
-onUnmounted(() => {
-  stopCameraScan();
-});
-
-function getAvailableCamera() {
-  Html5Qrcode.getCameras().then(devices => {
-    cameraIds.value = devices;
-  }).catch(err => {
-    scanIssue.value.display = true;
-    scanIssue.value.message = 'Aucune camera trouvée';
-  });
-}
-
-function selectCamera(cameraId) {
-  store.commit('changeRegisteredCamera', cameraId);
-}
-
-function startCamera() {
-  if (html5QrCode && html5QrCode.getState() !== 2) {
-    const height = document.body.offsetHeight
-    const width = document.body.offsetWidth
-    const minWidth = Math.min(height, width)
-
-    html5QrCode.start(
-        store.state.registeredCamera,
-        {
-          fps: 10,
-          qrbox: {minWidth: minWidth * 0.667, minHeight: minWidth * 0.667, width: 250, height: 250},
-          aspectRatio: Math.ceil(height / width),
-        },
-        (decodedText) => {
-          stopCameraScan();
-          scanSuccess(decodedText);
-        },
-        (errorMessage) => {
-          console.log(errorMessage);
-        }
-    )
-
-    // https://github.com/mebjas/html5-qrcode/issues/308
-    // setTimeout(function () {
-    //   html5QrCode.applyVideoConstraints({
-    //     focusMode: "continuous",
-    //     advanced: [{ zoom: 2.0 }],
-    //   });
-    // }, 2000);
-  }
-}
-
-function stopCameraScan() {
-  if (html5QrCode && html5QrCode.getState() !== 1) {
-    html5QrCode.stop();
-  }
-}
-
-async function scanSuccess(decodedText) {
-  // const db = getFirestore(getApp());
-  // const q = query(
-  //     collection(db, "products"),
-  //     where("user", "==", getAuth().currentUser.uid),
-  //     where('code', '==', decodedText)
-  // );
-  // const querySnapshot = await getDocs(q);
-  //
-  // if (querySnapshot.docs[0]) {
-  //   await router.push('/product/' + querySnapshot.docs[0].id);
-  // } else {
-  //   axios
-  //       .get(`https://world.openfoodfacts.net/api/v2/product/${decodedText}?fields=product_name,nutriscore_data,ecoscore_data,selected_images,generic_name_fr,nova_group`)
-  //       .then(response => {
-  //         product.value.code = decodedText;
-  //         product.value.name = response.data.product.product_name;
-  //         product.value.nutriscore = response.data.product.nutriscore_data.grade ?? '';
-  //         product.value.ecoscore = response.data.product.ecoscore_data.grade ?? '';
-  //         product.value.novagroup = response.data.product.nova_group ?? '';
-  //         product.value.description = response.data.product.generic_name_fr ? response.data.product.generic_name_fr.charAt(0).toUpperCase() + response.data.product.generic_name_fr.slice(1).toLowerCase() : '';
-  //
-  //         for (const [key, value] of Object.entries(response.data.product.selected_images.front.display)) {
-  //           availableImages.value.push(value);
-  //         }
-  //
-  //         product.value.image = availableImages.value ? availableImages.value[0] : '';
-  //
-  //         scanActive.value = false;
-  //         scanIssue.value.display = false;
-  //       })
-  //       .catch(error => {
-  //         scanIssue.value.display = true;
-  //         scanIssue.value.message = 'Produit inconnu';
-  //       });
-  // }
-}
-
-async function saveProduct() {
-  add({
-    code: product.value.code,
-    user: getAuth().currentUser.uid,
-    name: product.value.name,
-    description: product.value.description,
-    image: product.value.image,
-    finishedAt: false,
-    nutriscore: product.value.nutriscore,
-    ecoscore: product.value.ecoscore,
-    novagroup: product.value.novagroup,
-    expirationDates: product.value.expirationDates,
-  }).then(() => {
-    router.push('/');
-  });
-}
 </script>
 
 <template>
-  <div v-if="scanActive" class="text-center">
+  <div class="min-screen-height w-screen text-center">
+    <section v-if="mode === 'scanning'">
+      <video ref="videoRef"></video>
 
-    <h1 v-if="store.state.registeredCamera" class="my-10">Scannez votre article</h1>
-    <div id="qrCodeScanner" class="bg-white shadow"></div>
-
-    <p v-if="scanIssue.display" class="w-screen text-center pt-5">{{ scanIssue.message }}</p>
-    <div v-else-if="!store.state.registeredCamera">
-      <h1 class="mb-3">Sélectionnez une camera</h1>
-      <ul>
-        <li v-for="cameraId in cameraIds" :key="cameraId.id">
-          <button @click="selectCamera(cameraId.id); startCamera();"
-                  class="rounded shadow-md green-background text-sm font-semibold text-white p-3 my-2">
-            {{ cameraId.label }}
-          </button>
-        </li>
-      </ul>
-    </div>
-    <div v-else>
-      <button @click="stopCameraScan(); selectCamera(null); getAvailableCamera();"
-              class="rounded shadow-md green-background text-sm font-semibold text-white p-3 my-2">Changer de caméra
+      <button @click="mode = 'manual'; showDatePicker = true;"
+              class="green-background mt-5 px-3 py-1.5 text-white rounded">
+        Ajouter un produit sans code-barres
       </button>
-    </div>
+    </section>
 
-  </div>
-  <div v-else class="bg-white mt-10">
-    <div class="w-screen p-5">
+    <section v-else-if="mode === 'found'">
+      <h1 class="text-2xl mt-3">{{ newProduct.name }}</h1>
+      <p class="text-xl font-light">{{ newProduct.description }}</p>
 
-      <div class="mb-5 text-center text-xl">{{ product.name }}</div>
-
-      <img :src="product.image" class="mx-auto max-h-52 w-auto" :alt="product.name">
-      <div v-if="availableImages.length > 1" class="w-4/5 mx-auto mt-3 p-2 flex justify-between flex-wrap">
-        <img v-for="image in availableImages" :src="image" alt="product.name"
-             @click="product.image = image" class="h-16 px-1.5 py-1 border-2"
-             :class="[image === product.image ? 'rounded border-indigo-500' : 'border-transparent']">
+      <p class="mt-3">Images</p>
+      <div class="flex justify-evenly mt-2">
+        <img
+            v-for="image in images" :key="image"
+            :src="image" :alt="`${newProduct.name} image`"
+            :class="[image === newProduct.image ? 'opacity-100' : 'opacity-50', 'w-20']"
+            @click="newProduct.image = image"
+        >
       </div>
 
-      <div v-for="(expirationDate, key) in product.expirationDates" :key="key" class="text-center">
-        <label v-if="key === 0" for="expirationDate" class="w-4/5 text-sm font-medium leading-6 text-gray-900">
-          Date{{ product.expirationDates.length > 1 ? 's' : null }} de péremption</label>
-        <div class="h-8 my-2 grid grid-cols-12">
-          <input type="text" name="expirationDate" id="expirationDate" placeholder="? / ? / ?"
-                 @click="displayDatepicker = true; selectedExpirationDate.key = key; selectedExpirationDate.value = product.expirationDates[key];"
-                 v-model="product.expirationDates[key]"
-                 readonly
-                 :class="[expirationDate ? 'ring-gray-300' : 'ring-red-400', product.expirationDates.length === 1 ? 'col-span-12 rounded-md' : 'col-span-10 rounded-tl-md rounded-bl-md']"
-                 class="text-center h-full shadow-md ring-1 ring-inset text-sm"/>
-          <button v-if="product.expirationDates.length > 1" type="button"
-                  @click="product.expirationDates.splice(key, 1)"
-                  class="col-span-2 rounded-tr-md rounded-br-md shadow-md bg-red-400 text-sm font-semibold text-white">
-            <font-awesome-icon icon="fa-solid fa-xmark" class="text-xl mt-1"/>
-          </button>
-        </div>
+      <div class="w-full flex justify-evenly mt-5">
+        <Nutriscore :nutriscore="newProduct.nutriscore"/>
+        <Novagroup :novagroup="newProduct.novagroup"/>
+        <Ecoscore :ecoscore="newProduct.ecoscore"/>
       </div>
 
-      <button type="button" @click="product.expirationDates.push(null)"
-              class="rounded-md shadow-md bg-amber-300 text-sm font-semibold text-white w-full h-6">
-        <font-awesome-icon icon="fa-solid fa-plus" class="text-xl mt-0.5"/>
-      </button>
-
-      <DatepickerContainer :display="displayDatepicker && product"
-                           :date="selectedExpirationDate.value ?? moment().format('L')"
-                           @update-date="(newDate) => { product.expirationDates[selectedExpirationDate.key] = newDate; displayDatepicker = false; }"/>
-
-      <ScoresValue :product="product"/>
-
-      <div class="grid grid-cols-12">
-        <div class="col-span-1">
-          <font-awesome-icon icon="fa-regular fa-file-lines" class="mx-2 text-xl mt-1 float-left"></font-awesome-icon>
-        </div>
-        <div class="col-span-11 pt-1 pl-2">
-          {{ product.description }}
-        </div>
+      <br>
+      <div class="flex justify-center">
+        <p @click="showDatePicker = true">Expire le:
+          <span class="font-semibold">{{
+              newProduct.expirationDates ? moment(newProduct.expirationDates[0].date).format('L') : null
+            }}</span>
+        </p>
       </div>
 
-      <div v-show="product.image && product.expirationDates[0]" class="text-center">
-        <button type="button" @click="saveProduct"
-                class="rounded bg-white mt-5 px-4 py-2 text-md font-semibold text-gray-900 shadow ring-1 ring-inset ring-gray-300">
+      <br>
+      <div class="w-full justify-center mb-24">
+        <button v-if="!newProduct.expirationDates"
+                class="btn green-background opacity-50 text-white px-3 py-1.5 rounded">
           Ajouter
         </button>
+        <button v-else @click="submit" class="btn green-background text-white px-3 py-1.5 rounded">Ajouter</button>
       </div>
+    </section>
 
-    </div>
+    <section v-else>
+      <div class="w-full justify-center mb-24">
+        <h1 class="text-2xl mt-3">Nom</h1>
+        <input v-model="newProduct.name" class="w-3/4 border border-green-800 rounded px-2 py-1" type="text">
+
+        <p class="text-xl font-light mt-3">Description</p>
+        <input v-model="newProduct.description" class="w-3/4 border border-green-800 rounded px-2 py-1" type="text">
+
+        <p class="text-xl font-light mt-3">Image (url)</p>
+        <input v-model="newProduct.image" class="w-3/4 border border-green-800 rounded px-2 py-1" type="text">
+
+        <br>
+        <br>
+        <p @click="showDatePicker = true">Expire le:
+          <span class="font-semibold">{{
+              newProduct.expirationDates ? moment(newProduct.expirationDates[0].date).format('L') : null
+            }}</span>
+        </p>
+
+        <br>
+        <button v-if="!newProduct.name || !newProduct.expirationDates"
+                class="btn green-background opacity-50 text-white px-3 py-1.5 rounded">
+          Ajouter
+        </button>
+        <button v-else @click="submit" class="btn green-background text-white px-3 py-1.5 rounded">Ajouter</button>
+      </div>
+    </section>
+
+    <Datepicker v-if="showDatePicker" :date="moment().format('L')" @update-date="selectExpirationDate"/>
   </div>
-
-  <div class="h-20"></div>
 </template>
 
 <style>
-#qrCodeScanner {
-  width: 90vw;
-  margin: 0 5vw 3vh 5vw !important;
-}
 
-#qrCodeScanner img {
-  margin: auto;
-}
 </style>
