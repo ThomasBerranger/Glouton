@@ -1,7 +1,11 @@
-<script setup></script>
+<script setup>
+import {useTokenStore} from "@/stores/token";
+
+const tokenStore = useTokenStore();
+</script>
 
 <template>
-  <footer class="w-full flex justify-evenly items-center bg-white z-50">
+  <footer class="w-full flex justify-evenly items-center bg-white z-50" v-if="tokenStore.token">
     <router-link to="/" class="text-2xl">
       <font-awesome-icon icon="fa-solid fa-utensils"/>
     </router-link>
