@@ -1,7 +1,0 @@
-Les nouveautés dans la V2 (en cours)
-
-- Gestion de l'authentification via token
-- Intégration de Pinia
-- Animation de la navigation
-- Refont de l'interface
-- Intégration des recettes dans l'application

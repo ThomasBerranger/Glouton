@@ -13,6 +13,8 @@ import Novagroup from "@/components/Product/Scores/Novagroup.vue";
 import Ecoscore from "@/components/Product/Scores/Ecoscore.vue";
 import Confirmation from "@/components/Confirmation.vue";
 import NutritionalDetails from "@/components/Product/NutritionalDetails.vue";
+import Datepicker from "@/components/Datepicker.vue";
+import type {ExpirationDate} from "@/interfaces/expiration-date.ts";
 
 const route = useRoute();
 const tokenStore = useTokenStore();
@@ -22,6 +24,7 @@ const product = ref<Product>({} as Product);
 const isToRemove = ref<boolean>(false);
 const showNutritionalDetails = ref<boolean>(false);
 const isToEdit = ref<boolean>(false);
+const showDatePicker = ref<boolean>(false);
 
 const addToShoppingList = (): void => {
   axios.patch(
@@ -58,6 +61,20 @@ const edit = (): void => {
       })
 };
 
+const addExpirationDate = (expirationDate: string | null): void => {
+  if (expirationDate) {
+    const newExpirationDate: ExpirationDate = {
+      date: expirationDate
+    };
+
+    product.value.expirationDates.push(newExpirationDate);
+
+    patchExpirationDates();
+  }
+
+  showDatePicker.value = false;
+};
+
 const removeExpirationDate = (index: number | null = null): void => {
   if (index !== null) {
     product.value.expirationDates.splice(index, 1);
@@ -65,15 +82,16 @@ const removeExpirationDate = (index: number | null = null): void => {
     product.value.expirationDates = [];
   }
 
+  patchExpirationDates();
+}
+
+const patchExpirationDates = (): void => {
   axios.patch(
       `${getProductUrlByType(product.value)}/${product.value.id}`,
       {expirationDates: product.value.expirationDates},
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   )
-      .then(response => {
-        product.value = response.data;
-      });
-}
+};
 
 onMounted((): void => {
   axios.get(`${PRODUCT_URL}/${productId}`, {
@@ -96,11 +114,13 @@ onMounted((): void => {
     <input v-else v-model="product.description" class="w-full border text-center" placeholder="Aucune description"/>
 
     <p class="font-semibold pt-3 pb-1">Expiration dates</p>
-    <p v-for="(expirationDate, index) in product.expirationDates">
+    <p v-for="(expirationDate, index) in product.expirationDates" :key="index">
       {{ moment(expirationDate.date).format('DD/MM/YYYY') }}
-      <button @click="removeExpirationDate(index)" class="btn border border-red-600 px-2">remove</button>
+      <button @click="removeExpirationDate(index)" class="btn border border-red-600 px-2 mb-1">remove</button>
     </p>
-    <button @click="removeExpirationDate()" class="btn border border-red-600 px-2">Tout mangé</button>
+    <button @click="showDatePicker = true" class="btn border border-green-600 px-2 py-1 mb-1">Ajouter une date</button>
+    <br>
+    <button @click="removeExpirationDate()" class="btn border border-red-600 px-2 py-1">J'ai tout bouffé</button>
 
     <p class="font-semibold pt-3 pb-1">Recettes associées</p>
     <p>?</p>
@@ -126,6 +146,8 @@ onMounted((): void => {
 
     <NutritionalDetails v-if="showNutritionalDetails"
                         @closeNutritionalDetails="showNutritionalDetails = !showNutritionalDetails" :product="product"/>
+
+    <Datepicker v-if="showDatePicker" :date="moment().format('L')" @update-date="addExpirationDate"/>
 
     <Confirmation v-if="product && isToRemove" @closeConfirmation="remove"
                   :product="product"

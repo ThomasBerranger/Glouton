@@ -13,7 +13,8 @@
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "vue": ["./node_modules/vue"]
     },
     "types": ["node", "vue", "vite/client"],
     "esModuleInterop": true,
@@ -21,7 +22,8 @@
     "skipLibCheck": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "allowImportingTsExtensions": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true
   },
   "references": [
     {

@@ -4,7 +4,11 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["node", "vue"],
+    "paths": {
+      "vue": ["./node_modules/vue"]
+    }
   },
   "include": ["vite.config.ts"]
 }
