@@ -80,14 +80,13 @@ const manageImages = (availableImages: string[]): string[] => {
   return availableImages;
 };
 
-const selectExpirationDate = (expirationDate: string | null): void => {
+const addExpirationDate = (expirationDate: string | null): void => {
   if (!expirationDate) return;
 
   const newExpirationDate: ExpirationDate = {
     date: expirationDate
   };
 
-  newProduct.value.expirationDates = [];
   newProduct.value.expirationDates.push(newExpirationDate);
   showDatePicker.value = false;
 };
@@ -105,6 +104,8 @@ const submit = (): void => {
 
 onMounted((): void => {
   startScan();
+
+  newProduct.value.expirationDates = [];
 });
 </script>
 
@@ -140,21 +141,11 @@ onMounted((): void => {
       </div>
 
       <br>
-      <div class="flex justify-center">
-        <p @click="showDatePicker = true">Expire le:
-          <span class="font-semibold">{{
-              newProduct.expirationDates ? moment(newProduct.expirationDates[0].date).format('L') : null
-            }}</span>
+      <div class="flex-row justify-center">
+        <p @click="showDatePicker = true">Dates d'expirations :</p>
+        <p v-for="expirationDate in newProduct.expirationDates" class="font-light">
+          {{ moment(expirationDate.date).format('L') }}
         </p>
-      </div>
-
-      <br>
-      <div class="w-full justify-center mb-24">
-        <button v-if="!newProduct.expirationDates"
-                class="btn green-background opacity-50 text-white px-3 py-1.5 rounded">
-          Ajouter
-        </button>
-        <button v-else @click="submit" class="btn green-background text-white px-3 py-1.5 rounded">Ajouter</button>
       </div>
     </section>
 
@@ -177,17 +168,24 @@ onMounted((): void => {
               newProduct.expirationDates ? moment(newProduct.expirationDates[0].date).format('L') : null
             }}</span>
         </p>
-
-        <br>
-        <button v-if="!newProduct.name || !newProduct.expirationDates"
-                class="btn green-background opacity-50 text-white px-3 py-1.5 rounded">
-          Ajouter
-        </button>
-        <button v-else @click="submit" class="btn green-background text-white px-3 py-1.5 rounded">Ajouter</button>
       </div>
     </section>
 
-    <Datepicker v-if="showDatePicker" :date="moment().format('L')" @update-date="selectExpirationDate"/>
+    <section v-if="mode !== 'scanning'" class="mt-1">
+      <button @click="showDatePicker = true" class="btn green-background text-xs text-white px-3 py-1.5 rounded">
+        Ajouter
+      </button>
+
+      <br><br>
+
+      <button v-if="!newProduct.name || !newProduct.expirationDates"
+              class="btn green-background opacity-50 text-white px-3 py-1.5 rounded">
+        Ajouter
+      </button>
+      <button v-else @click="submit" class="btn green-background text-white px-3 py-1.5 rounded">Enregistrer</button>
+    </section>
+
+    <Datepicker v-if="showDatePicker" :date="moment().format('L')" @update-date="addExpirationDate"/>
   </div>
 </template>
 

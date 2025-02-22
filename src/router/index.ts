@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: '/scan',
-        component: () => import('@/views/Scan.vue'),
+        component: () => import('@/views/Products/Scan.vue'),
         meta: { requiresAuth: true }
     },
     {

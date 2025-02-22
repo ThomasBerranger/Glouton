@@ -1,49 +1,83 @@
-import { defineConfig, UserConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { VitePWA, VitePWAOptions } from "vite-plugin-pwa"
-import * as path from 'path'
+import { defineConfig, UserConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const pwaOptions: Partial<VitePWAOptions> = {
-    base: '/Glouton',
-    registerType: 'autoUpdate',
+    base: '/Glouton/',
+    registerType: 'prompt',
     devOptions: {
-        enabled: true
+        enabled: true,
+        type: 'module',
+        navigateFallback: 'index.html'
     },
-    includeAssets: ['favicon.ico', 'apple-touch-icon'],
+    strategies: 'generateSW' as const,
+    includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
+    injectRegister: 'script',
     manifest: {
         name: 'Glouton',
         short_name: 'Glouton',
         description: 'Anti-waste application for food lovers.',
         theme_color: '#ffffff',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/Glouton/',
+        scope: '/Glouton/',
         icons: [
             {
-                src: 'android/android-144x144.png',
+                src: '/Glouton/android/android-144x144.png',
                 sizes: '144x144',
                 type: 'image/png'
             },
             {
-                src: 'android/android-192x192.png',
+                src: '/Glouton/android/android-192x192.png',
                 sizes: '192x192',
                 type: 'image/png'
             },
             {
-                src: 'android/android-512x512.png',
+                src: '/Glouton/android/android-512x512.png',
                 sizes: '512x512',
                 type: 'image/png'
             },
             {
-                src: 'android/android-512x512.png',
+                src: '/Glouton/android/android-512x512.png',
                 sizes: '512x512',
                 type: 'image/png',
                 purpose: 'any'
             },
             {
-                src: 'android/android-512x512.png',
+                src: '/Glouton/android/android-512x512.png',
                 sizes: '512x512',
                 type: 'image/png',
-                purpose: 'maskable',
-            },
-        ]
+                purpose: 'maskable'
+            }
+        ],
+        categories: ['food', 'lifestyle'],
+        orientation: 'any',
+        lang: 'fr'
+    },
+    workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,ttf}'],
+        cleanupOutdatedCaches: true,
+        sourcemap: true,
+        runtimeCaching: [{
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst' as const,
+            options: {
+                cacheName: 'google-fonts-cache',
+                expiration: {
+                    maxEntries: 10,
+                    maxAgeSeconds: 60 * 60 * 24 * 365
+                },
+                cacheableResponse: {
+                    statuses: [0, 200]
+                }
+            }
+        }]
     }
 }
 
@@ -60,10 +94,11 @@ const config: UserConfig = {
     },
     resolve: {
         alias: {
-            '@': path.resolve(path.dirname(''), './src')
+            '@': path.resolve(__dirname, './src'),
+            'vue': 'vue/dist/vue.esm-bundler.js'
         }
     },
-    base: '/Glouton'
+    base: '/Glouton/'
 }
 
 export default defineConfig(config)
