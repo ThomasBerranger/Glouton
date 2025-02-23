@@ -54,8 +54,8 @@ const fetchData = (): void => {
         newProduct.value.barcode = code.value;
         newProduct.value.scanned = true;
         newProduct.value.name = response.data.product.product_name;
-        newProduct.value.nutriscore = response.data.product.nutriscore_data.grade;
-        newProduct.value.ecoscore = response.data.product.ecoscore_data.grade;
+        newProduct.value.nutriscore = response.data.product.nutriscore_data?.grade;
+        newProduct.value.ecoscore = response.data.product.ecoscore_data?.grade;
         newProduct.value.novagroup = response.data.product.nova_group;
         newProduct.value.description = response.data.product.generic_name_fr ? response.data.product.generic_name_fr.charAt(0).toUpperCase() + response.data.product.generic_name_fr.slice(1).toLowerCase() : '';
 
@@ -81,6 +81,8 @@ const manageImages = (availableImages: string[]): string[] => {
 };
 
 const addExpirationDate = (expirationDate: string | null): void => {
+  console.log(expirationDate);
+
   if (!expirationDate) return;
 
   const newExpirationDate: ExpirationDate = {
@@ -150,7 +152,9 @@ onMounted((): void => {
     </section>
 
     <section v-else>
-      <div class="w-full justify-center mb-24">
+      <div class="w-full justify-center mb-4">
+        <p v-if="newProduct.barcode" class="mt-2 text-red-500">Produit inconnu</p>
+
         <h1 class="text-2xl mt-3">Nom</h1>
         <input v-model="newProduct.name" class="w-3/4 border border-green-800 rounded px-2 py-1" type="text">
 
@@ -163,11 +167,13 @@ onMounted((): void => {
 
         <br>
         <br>
-        <p @click="showDatePicker = true">Expire le:
-          <span class="font-semibold">{{
-              newProduct.expirationDates ? moment(newProduct.expirationDates[0].date).format('L') : null
-            }}</span>
-        </p>
+
+        <div class="flex-row justify-center">
+          <p @click="showDatePicker = true">Dates d'expirations :</p>
+          <p v-for="expirationDate in newProduct.expirationDates" class="font-light">
+            {{ moment(expirationDate.date).format('L') }}
+          </p>
+        </div>
       </div>
     </section>
 
@@ -180,7 +186,7 @@ onMounted((): void => {
 
       <button v-if="!newProduct.name || !newProduct.expirationDates"
               class="btn green-background opacity-50 text-white px-3 py-1.5 rounded">
-        Ajouter
+        Enregistrer
       </button>
       <button v-else @click="submit" class="btn green-background text-white px-3 py-1.5 rounded">Enregistrer</button>
     </section>
