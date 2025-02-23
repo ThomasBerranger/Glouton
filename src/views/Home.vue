@@ -14,7 +14,7 @@ const recipes = ref<Recipe[]>([]);
 const shoppingListCount = ref<number>(0);
 
 onMounted(async () => {
-  axios.get(`${PRODUCT_URL}?limit=8`, {
+  axios.get(`${PRODUCT_URL}?limit=10`, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => products.value = response.data)
       .catch(error => console.error("Products error:", error));
@@ -50,7 +50,7 @@ onMounted(async () => {
 
       <router-link
           to="/products"
-          class="col-span-1 flex justify-center items-center relative rounded-xl border border-1 border-gray-200 text-white font-semibold bg-green-600 opacity-80"
+          class="col-span-2 flex justify-center items-center relative rounded-xl border border-1 border-gray-200 text-white font-semibold bg-green-600 opacity-60"
       >
         Tout voir
       </router-link>
