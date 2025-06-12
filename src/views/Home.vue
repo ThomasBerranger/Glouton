@@ -1,154 +1,76 @@
-<script setup>
-import {onMounted, ref, watch} from "vue";
-import {collection, query, where, getDocs, getFirestore, doc, updateDoc} from "firebase/firestore";
-import {getApp} from "firebase/app";
-import {getAuth} from "firebase/auth";
-import HorizontalList from "@/components/HorizontalLIst.vue";
+<script lang="ts" setup>
+import {onMounted, ref} from "vue";
+import {RouterLink} from "vue-router";
+import axios from "axios";
 import moment from "moment";
-import {getNearestExpirationTimestampDate} from "@/functions/product";
-import {Carousel, Slide} from 'vue3-carousel';
-import 'vue3-carousel/dist/carousel.css';
-import store from "@/assets/store";
+import {useTokenStore} from "@/stores/token";
+import type {Product} from "@/interfaces/product";
+import type {Recipe} from "@/interfaces/recipe";
+import {PRODUCT_URL, RECIPE_URL} from "@/constants/api.ts";
 
-let productsByCategory = ref({
-  week: {slideKey: 0, values: [], loading: true},
-  month: {slideKey: 1, values: [], loading: true},
-  other: {slideKey: 3, values: [], loading: true},
-  finished: {slideKey: 2, values: [], loading: true}
-});
-
-const myCarousel = ref(null);
-
-const db = getFirestore(getApp());
+const tokenStore = useTokenStore();
+const products = ref<Product[]>([]);
+const recipes = ref<Recipe[]>([]);
+const shoppingListCount = ref<number>(0);
 
 onMounted(async () => {
-      // Get all unfinished products
-      new Promise(async (resolve) => {
-        const unfinishedProducts = [];
-        const querySnapshot = await getDocs(
-            query(
-                collection(db, "products"),
-                where("user", "==", getAuth().currentUser.uid),
-                where("finishedAt", "==", false),
-            )
-        );
+  axios.get(`${PRODUCT_URL}?limit=10`, {
+    headers: {Authorization: `Bearer ${tokenStore.token}`},
+  }).then(response => products.value = response.data)
+      .catch(error => console.error("Products error:", error));
 
-        querySnapshot.forEach((doc) => {
-          unfinishedProducts.push({...doc.data(), id: doc.id});
-        });
+  axios.get(RECIPE_URL, {
+    headers: {Authorization: `Bearer ${tokenStore.token}`},
+  }).then(response => recipes.value = response.data)
+      .catch(error => console.error("Recipes error:", error));
 
-        resolve(unfinishedProducts);
-      }).then((unfinishedProducts) => {
-        // Fill week products category
-        new Promise((resolve) => {
-          productsByCategory.value.week.values = unfinishedProducts.filter(product =>
-              moment().add(1, 'week').valueOf() >= Math.min(...product.expirationDates.map(date => moment(date, 'L').valueOf()))
-          )
-
-          productsByCategory.value.week.values.sort((a, b) => {
-            return getNearestExpirationTimestampDate(a) - getNearestExpirationTimestampDate(b);
-          })
-
-          resolve();
-        }).then(() => {
-          productsByCategory.value.week.loading = false
-        });
-        // Fill month products category
-        new Promise((resolve) => {
-          productsByCategory.value.month.values = unfinishedProducts.filter(product =>
-              moment().add(1, 'week').valueOf() < Math.min(...product.expirationDates.map(date => moment(date, 'L').valueOf()))
-              && moment().add(1, 'month').valueOf() >= Math.min(...product.expirationDates.map(date => moment(date, 'L').valueOf()))
-          )
-
-          productsByCategory.value.month.values.sort((a, b) => {
-            return getNearestExpirationTimestampDate(a) - getNearestExpirationTimestampDate(b);
-          })
-
-          resolve();
-        }).then(() => {
-          productsByCategory.value.month.loading = false
-        });
-        // Fill other products category
-        new Promise((resolve) => {
-          productsByCategory.value.other.values = unfinishedProducts.filter(product =>
-              moment().add(1, 'month').valueOf() < Math.min(...product.expirationDates.map(date => moment(date, 'L').valueOf()))
-          )
-
-          productsByCategory.value.other.values.sort((a, b) => {
-            return getNearestExpirationTimestampDate(a) - getNearestExpirationTimestampDate(b);
-          })
-
-          resolve();
-        }).then(() => {
-          productsByCategory.value.other.loading = false
-        });
-      })
-
-      // Get finished products and fill category
-      new Promise(async (resolve) => {
-        const notFinishedProductsQuerySnapshot = await getDocs(
-            query(
-                collection(db, "products"),
-                where("user", "==", getAuth().currentUser.uid),
-                where("finishedAt", "!=", false),
-            )
-        );
-
-        notFinishedProductsQuerySnapshot.forEach((doc) => {
-          productsByCategory.value.finished.values.push({...doc.data(), id: doc.id});
-        });
-
-        productsByCategory.value.finished.values.sort((a, b) => {
-          return new Date(moment(b.finishedAt, 'L').format('YYYY-MM-DD')) - new Date(moment(a.finishedAt, 'L').format('YYYY-MM-DD'));
-        })
-
-        resolve();
-      }).then(() => {
-        productsByCategory.value.finished.loading = false;
-      })
-    }
-);
-
-function handleSlideStart(data) {
-  store.commit('changeActiveSlide', data.slidingToIndex);
-}
+  axios.get(
+      `${PRODUCT_URL}/shopping-list?count=true`,
+      {headers: {Authorization: `Bearer ${tokenStore.token}`}}
+  ).then(response => shoppingListCount.value = response.data)
+      .catch(error => console.error("Shopping list error:", error));
+});
 </script>
 
 <template>
-  <section class="w-screen flex justify-evenly h-16 fixed z-10 white-background items-center">
-    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(0)"
-            :class="[store.state.activeSlide === 0 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
-      Semaine
-    </button>
-    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(1)"
-            :class="[store.state.activeSlide === 1 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
-      Mois
-    </button>
-    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(2)"
-            :class="[store.state.activeSlide === 2 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
-      Année
-    </button>
-    <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(3)"
-            :class="[store.state.activeSlide === 3 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
-      Terminé
-    </button>
-  </section>
+  <div class="screen-height">
 
-  <Carousel ref="myCarousel" :items-to-show="1" @slide-start="handleSlideStart" :modelValue="store.state.activeSlide">
-    <Slide v-for="category in productsByCategory" :key="category.slideKey" v-model="store.state.activeSlide">
-      <HorizontalList :products="category"/>
-    </Slide>
-  </Carousel>
+    <section class="h-3/5 w-screen p-1 grid gap-1 grid-cols-4 grid-rows-3">
+      <router-link :to="{name: 'product.details', params: { id: product.id }}"
+                   v-for="product in products" class="relative p-1">
+        <img
+            :src="product.image"
+            :alt="product.name"
+            class="w-full h-full object-contain"
+        />
+        <div class="absolute bottom-0 right-0 p-2 bg-red-300">
+          {{ moment(product.expirationDates[0].date).diff(moment(), 'days') }}
+        </div>
+      </router-link>
 
-  <div class="h-20 w-screen white-background"></div>
+      <router-link
+          to="/products"
+          class="col-span-2 flex justify-center items-center relative rounded-xl border border-1 border-gray-200 text-white font-semibold bg-green-600 opacity-60"
+      >
+        Tout voir
+      </router-link>
+    </section>
+
+    <section class="h-1/5 border border-1 border-red-600">
+      <ul>
+        <li v-for="recipe in recipes" class="p-2">
+          - {{ recipe.name }} : {{ recipe.duration }}
+        </li>
+      </ul>
+    </section>
+
+    <router-link to="/shopping-list" class="focus:outline-none tap-highlight-transparent">
+      <section class="h-1/5 border border-1 border-green-600 p-2">
+        <span class="font-semibold text-green-600">{{ shoppingListCount }}</span>
+        produit{{ shoppingListCount > 1 ? "s" : "" }}
+        dans la liste de course.
+      </section>
+    </router-link>
+
+  </div>
 </template>
-
-<style>
-.carousel {
-  top: 4vh;
-}
-
-.carousel__slide {
-  align-items: flex-start;
-}
-</style>

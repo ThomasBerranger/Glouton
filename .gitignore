@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 .DS_Store
+dev-dist
 dist
 dist-ssr
 coverage
@@ -26,9 +27,3 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-
-src/config
-.firebase
-.firebaserc
-firebase.json
-database.rules.json
