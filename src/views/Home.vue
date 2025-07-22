@@ -50,7 +50,7 @@ onMounted(async () => {
 
       <router-link
           to="/products"
-          class="col-span-2 flex justify-center items-center relative rounded-xl border border-1 border-gray-200 text-white font-semibold bg-green-600 opacity-60"
+          class="col-span-2 flex justify-center items-center relative rounded-xl border border-1 text-white font-semibold bg-green-600 opacity-60"
       >
         Tout voir
       </router-link>
@@ -62,6 +62,14 @@ onMounted(async () => {
           - {{ recipe.name }} : {{ recipe.duration }}
         </li>
       </ul>
+      <div class="flex justify-center">
+      <router-link
+          to="/recipes"
+          class="w-1/2 text-center rounded border border-1 text-white font-semibold bg-orange-600 opacity-60"
+      >
+        Recettes
+      </router-link>
+      </div>
     </section>
 
     <router-link to="/shopping-list" class="focus:outline-none tap-highlight-transparent">

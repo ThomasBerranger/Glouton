@@ -25,6 +25,11 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true }
     },
     {
+        path: '/recipes',
+        component: () => import('@/views/Recipes/List.vue'),
+        meta: { requiresAuth: true }
+    },
+    {
         path: '/shopping-list',
         component: () => import('@/views/Products/ShoppingList.vue'),
         meta: { requiresAuth: true }
