@@ -10,12 +10,10 @@ const tokenStore = useTokenStore();
 const recipes = ref<Recipe[]>([]);
 
 const removeRecipe = (recipeId: string): void => {
-  console.log(`${RECIPE_URL}/${recipeId}`);
-
   axios.delete(`${RECIPE_URL}/${recipeId}`, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then((): void => {
-    console.log("Recipe deleted");
+    recipes.value = recipes.value.filter(recipe => recipe.id !== recipeId);
   });
 }
 
