@@ -33,14 +33,16 @@ onMounted(async () => {
         <button @click="removeRecipe(recipe.id)" class="rounded font-bold text-red-600 opacity-80 px-1 py-0.5">
           <font-awesome-icon icon="fa-solid fa-trash"/>
         </button>
-        <p class="pl-1.5">{{ recipe.name }}
-        </p>
+        <div class="pl-1.5 border-solid border-b-2">
+          <p>{{ recipe.name }}</p>
+          <p v-for="product in recipe.products" class="italic">{{ product.name }}</p>
+        </div>
       </li>
     </ul>
 
     <div class="flex justify-center">
       <router-link
-          to="/"
+          to="/create-recipe"
           class="p-2 rounded text-white font-semibold bg-green-600 opacity-60"
       >Ajouter une nouvelle recette
       </router-link>
