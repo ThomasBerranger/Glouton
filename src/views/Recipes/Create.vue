@@ -3,13 +3,14 @@ import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import type {Product} from "@/interfaces/product";
 import {useTokenStore} from "@/stores/token";
-import {getProductUrlByType, PRODUCT_URL, RECIPE_URL} from "@/constants/api.ts";
+import {PRODUCT_URL, RECIPE_URL} from "@/constants/api.ts";
 import router from "@/router";
 
 const tokenStore = useTokenStore();
 const products = ref<Product[]>([]);
 
 const recipeName = ref<string>("");
+const recipeDuration = ref<string>("");
 const searchedProductName = ref<string>('')
 const selectedProductIds = ref<string[]>([]);
 
@@ -34,6 +35,7 @@ const postRecipe = (): void => {
       RECIPE_URL,
       {
         "name": recipeName.value,
+        "duration": `00:${recipeDuration.value}:00`,
         "products": selectedProductIds.value
       },
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
@@ -69,6 +71,13 @@ onMounted(async () => {
           :class="[selectedProductIds.includes(product.id) ? 'bg-green-200 rounded' : '', 'p-1 w-full h-24 object-contain']"
           @click="toggleSelectedProductIds(product.id)"
       />
+    </div>
+
+    <div class="grid grid-cols-12 gap-1 mt-3">
+      <p class="col-span-8 mb-2">Le temps de préparation : </p>
+      <input type="text" name="duration" placeholder="10" v-model="recipeDuration"
+             class="col-span-2 rounded-md text-gray-900 text-end px-2"/>
+      <p class="col-span-2">minutes</p>
     </div>
 
     <div class="w-full text-center mt-2">
