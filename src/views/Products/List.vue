@@ -12,7 +12,7 @@ const products = ref<Product[]>([]);
 const isListByCategoryActive = ref<boolean>(true)
 
 onMounted(async () => {
-  axios.get(PRODUCT_URL, {
+  axios.get(`${ PRODUCT_URL }?limit=1000`, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => products.value = response.data)
       .catch(error => console.error("Products error:", error));
@@ -20,7 +20,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="products.length > 0" class="min-screen-height">
+  <div v-if="products.length > 0" class="min-screen-height bg-gray-100">
     <Transition name="slide" mode="out-in">
       <component
           :is="isListByCategoryActive ? ListByDate : ListByCategory"
