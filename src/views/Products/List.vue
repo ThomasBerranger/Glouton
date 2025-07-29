@@ -12,7 +12,7 @@ const products = ref<Product[]>([]);
 const isListByCategoryActive = ref<boolean>(true)
 
 onMounted(async () => {
-  axios.get(`${ PRODUCT_URL }?limit=1000`, {
+  axios.get(`${PRODUCT_URL}?limit=1000`, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => products.value = response.data)
       .catch(error => console.error("Products error:", error));
@@ -20,20 +20,22 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="products.length > 0" class="min-screen-height bg-gray-100">
+  <div class="min-screen-height bg-gray-100">
+    <div class="w-full flex justify-around mt-3">
+      <button class="rounded-md p-0.5 text-white green-background pt-1.5 pl-2 pr-3">
+        <font-awesome-icon icon="fa-solid fa-arrow-down-1-9" class="text-2xl pl-1"/>
+      </button>
+      <button class="rounded-md text-white green-background p-1" @click="isListByCategoryActive = !isListByCategoryActive">
+        <font-awesome-icon icon="fa-solid fa-carrot" class="text-2xl pl-3 pr-2"/>
+      </button>
+    </div>
+
     <Transition name="slide" mode="out-in">
       <component
           :is="isListByCategoryActive ? ListByDate : ListByCategory"
           :products="products"
       />
     </Transition>
-
-    <div class="fixed bottom-20 right-3">
-      <button class="border border-amber-800 rounded-md p-1" @click="isListByCategoryActive = !isListByCategoryActive">
-        {{ isListByCategoryActive ? 'Catégories' : 'Dates' }}
-        <font-awesome-icon icon="fa-solid fa-poo" class="text-2xl pl-1"/>
-      </button>
-    </div>
   </div>
 </template>
 
