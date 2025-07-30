@@ -12,7 +12,7 @@ import {
     faCartShopping, faCheck,
     faChevronDown, faChevronLeft, faChevronRight,
     faChevronUp, faCircleNotch, faPlus, faTrash,
-    faUser, faCarrot,
+    faUser, faCarrot, faBoxesPacking,
     faUtensils, faXmark,
     faPoo, faFlaskVial, faPenToSquare,
     faArrowDown19, faArrowDown91, faArrowDownAZ, faArrowDownZA
@@ -24,7 +24,7 @@ import {faFileLines} from "@fortawesome/free-regular-svg-icons";
 library.add(
     faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight,
     faUser, faCheck, faXmark, faCircleNotch, faTrash, faPlus, faFileLines, faArrowLeftLong, faPoo,
-    faFlaskVial, faPenToSquare, faArrowDown19, faArrowDown91, faArrowDownAZ, faArrowDownZA, faCarrot
+    faFlaskVial, faPenToSquare, faArrowDown19, faArrowDown91, faArrowDownAZ, faArrowDownZA, faCarrot, faBoxesPacking
 );
 
 const pinia = createPinia();
