@@ -12,7 +12,6 @@ import ExpirationLabel from "@/components/ExpirationLabel.vue";
 const tokenStore = useTokenStore();
 const products = ref<Product[]>([]);
 const recipes = ref<Recipe[]>([]);
-const shoppingListCount = ref<number>(0);
 
 onMounted(async () => {
   axios.get(`${PRODUCT_URL}?limit=11`, {
@@ -24,12 +23,6 @@ onMounted(async () => {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => recipes.value = response.data)
       .catch(error => console.error("Recipes error:", error));
-
-  axios.get(
-      `${PRODUCT_URL}/shopping-list?count=true`,
-      {headers: {Authorization: `Bearer ${tokenStore.token}`}}
-  ).then(response => shoppingListCount.value = response.data)
-      .catch(error => console.error("Shopping list error:", error));
 });
 </script>
 
@@ -70,14 +63,5 @@ onMounted(async () => {
       </router-link>
       </div>
     </section>
-
-    <router-link to="/shopping-list" class="focus:outline-none tap-highlight-transparent">
-      <section class="h-1/5 border border-1 border-green-600 p-2">
-        <span class="font-semibold text-green-600">{{ shoppingListCount }}</span>
-        produit{{ shoppingListCount > 1 ? "s" : "" }}
-        dans la liste de course.
-      </section>
-    </router-link>
-
   </div>
 </template>
