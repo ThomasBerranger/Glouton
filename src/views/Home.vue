@@ -59,7 +59,7 @@ onMounted(async () => {
         </router-link>
       </div>
 
-      <div class="px-3">
+      <div class="px-3 pb-28">
         <div v-for="recipe in recipes" class="flex justify-between bg-white shadow-md mb-2 p-2">
           <div class="pr-2">{{ recipe.name }}</div>
           <div class="flex items-center gap-2">
@@ -69,7 +69,7 @@ onMounted(async () => {
               <font-awesome-icon icon="fa-solid fa-basket-shopping"/>
             </div>
             <div class="flex items-center rounded text-sm px-1.5 h-6 tracking-wider">
-              {{ recipe.duration.slice(0, -3) }}
+              {{ recipe.duration?.slice(0, -3) }}
             </div>
           </div>
         </div>

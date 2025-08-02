@@ -2,18 +2,21 @@ import {defineStore} from "pinia";
 
 export const useShoppingListCounterStore = defineStore('shoppingListCount', {
     state: (): { shoppingListCount: number } => ({
-        shoppingListCount: localStorage.getItem('shoppingListCount') || 0
+        shoppingListCount: parseInt(localStorage.getItem('shoppingListCount') || '0', 10)
     }),
 
     actions: {
         setShoppingListCount(count: number): void {
-            localStorage.setItem('shoppingListCount', count);
+            this.shoppingListCount = count;
+            localStorage.setItem('shoppingListCount', count.toString());
         },
         addOne(): void {
-            localStorage.setItem('shoppingListCount', this.shoppingListCount++);
+            this.shoppingListCount++;
+            localStorage.setItem('shoppingListCount', this.shoppingListCount.toString());
         },
         removeOne(): void {
-            localStorage.setItem('shoppingListCount', this.shoppingListCount--);
+            this.shoppingListCount--;
+            localStorage.setItem('shoppingListCount', this.shoppingListCount.toString());
         },
     }
 })

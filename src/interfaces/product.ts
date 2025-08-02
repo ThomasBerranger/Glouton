@@ -13,5 +13,5 @@ export interface Product {
     ecoscore: string | undefined;
     expirationDates: ExpirationDate[];
     scanned: boolean,
-    closestExpirationDate : Date | null;
+    closestExpirationDate : string | null;
 }
