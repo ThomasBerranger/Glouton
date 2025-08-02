@@ -22,11 +22,11 @@ onMounted(async () => {
 <template>
   <div class="min-screen-height bg-gray-100">
     <div class="w-full flex justify-around mt-3">
-      <button class="rounded-md p-0.5 text-white green-background pt-1.5 pl-2 pr-3">
+      <button class="rounded-md p-0.5 text-white green-background pt-1.5 pl-4 pr-5">
         <font-awesome-icon icon="fa-solid fa-arrow-down-1-9" class="text-2xl pl-1"/>
       </button>
       <button class="rounded-md text-white green-background p-1" @click="isListByCategoryActive = !isListByCategoryActive">
-        <font-awesome-icon icon="fa-solid fa-carrot" class="text-2xl pl-3 pr-2"/>
+        <font-awesome-icon icon="fa-solid fa-carrot" class="text-2xl pl-5 pr-4"/>
       </button>
     </div>
 

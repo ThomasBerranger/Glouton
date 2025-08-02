@@ -34,12 +34,6 @@ const filteredProducts = computed(() => {
 })
 
 const postRecipe = (): void => {
-  console.log({
-    "name": recipeName.value,
-    "duration": recipeDuration.value,
-    "products": selectedProductIds.value
-  })
-
   axios.post(
       RECIPE_URL,
       {

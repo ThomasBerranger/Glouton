@@ -15,9 +15,11 @@ import Confirmation from "@/components/Confirmation.vue";
 import NutritionalDetails from "@/components/Product/NutritionalDetails.vue";
 import Datepicker from "@/components/Datepicker.vue";
 import type {ExpirationDate} from "@/interfaces/expiration-date.ts";
+import {useShoppingListCounterStore} from "@/stores/shoppingListCount.ts";
 
 const route = useRoute();
 const tokenStore = useTokenStore();
+const shoppingListCounterStore = useShoppingListCounterStore();
 
 const productId = route.params.id as string;
 const product = ref<Product>({} as Product);
@@ -34,6 +36,7 @@ const addToShoppingList = (): void => {
   )
       .then(response => {
         product.value = response.data;
+        shoppingListCounterStore.addOne();
       })
 };
 

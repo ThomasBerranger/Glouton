@@ -34,7 +34,7 @@ onMounted(async () => {
           <font-awesome-icon icon="fa-solid fa-trash"/>
         </button>
         <div class="pl-1.5 border-solid border-b-2">
-          <p>{{ recipe.name }}</p>
+          <p>{{ recipe.name }} {{ recipe.duration }}</p>
           <p v-for="product in recipe.products" class="italic">{{ product.name }}</p>
         </div>
       </li>

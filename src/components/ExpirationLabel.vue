@@ -27,15 +27,11 @@ onMounted(async () => {
     } else if (formattedNumber.value <= 7) {
       labelColor.value = 'bg-red-400';
     } else if (formattedNumber.value <= 10) {
-      labelColor.value = 'bg-orange-500';
-    } else if (formattedNumber.value <= 13) {
-      labelColor.value = 'bg-amber-500';
-    } else if (formattedNumber.value <= 13) {
-      labelColor.value = 'bg-yellow-500';
-    } else if (formattedNumber.value <= 16) {
-      labelColor.value = 'bg-emerald-500';
+      labelColor.value = 'bg-orange-400';
+    } else if (formattedNumber.value <= 15) {
+      labelColor.value = 'bg-orange-300';
     } else {
-      labelColor.value = 'bg-emerald-500';
+      labelColor.value = 'green-background';
     }
   }
 })
@@ -43,7 +39,7 @@ onMounted(async () => {
 
 <template>
   <div :class="labelColor"
-       class="absolute top-0 left-0 text-white rounded-br-3xl pl-1.5 pr-3 pb-1 text-sm font-semibold">
+       class="text-white text-center font-semibold">
     {{ formattedNumber }} <span class="text-xs font-normal">{{ formattedUnit }}</span>
   </div>
 </template>

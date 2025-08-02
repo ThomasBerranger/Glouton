@@ -13,17 +13,17 @@ import {
     faChevronDown, faChevronLeft, faChevronRight,
     faChevronUp, faCircleNotch, faPlus, faTrash,
     faUser, faCarrot, faBoxesPacking,
-    faUtensils, faXmark,
+    faUtensils, faXmark, faBasketShopping,
     faPoo, faFlaskVial, faPenToSquare,
     faArrowDown19, faArrowDown91, faArrowDownAZ, faArrowDownZA
 } from '@fortawesome/free-solid-svg-icons';
 import moment from "moment";
 import 'moment/locale/fr';
-import {faFileLines} from "@fortawesome/free-regular-svg-icons";
+import {faFileLines, faCircle, faCircleCheck} from "@fortawesome/free-regular-svg-icons";
 
 library.add(
-    faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight,
-    faUser, faCheck, faXmark, faCircleNotch, faTrash, faPlus, faFileLines, faArrowLeftLong, faPoo,
+    faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight, faBasketShopping,
+    faUser, faCheck, faXmark, faCircleNotch, faTrash, faPlus, faFileLines, faArrowLeftLong, faPoo, faCircle, faCircleCheck,
     faFlaskVial, faPenToSquare, faArrowDown19, faArrowDown91, faArrowDownAZ, faArrowDownZA, faCarrot, faBoxesPacking
 );
 
