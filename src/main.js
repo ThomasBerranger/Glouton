@@ -7,15 +7,10 @@ import router from './router';
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {
-    faArrowLeftLong,
-    faBarcode,
-    faCartShopping, faCheck,
-    faChevronDown, faChevronLeft, faChevronRight,
-    faChevronUp, faCircleNotch, faPlus, faTrash,
-    faUser, faCarrot, faBoxesPacking,
-    faUtensils, faXmark, faBasketShopping,
-    faPoo, faFlaskVial, faPenToSquare,
-    faArrowDown19, faArrowDown91, faArrowDownAZ, faArrowDownZA
+    faArrowLeftLong, faBarcode, faCartShopping, faCheck, faChevronDown, faChevronLeft, faChevronRight,
+    faChevronUp, faCircleNotch, faPlus, faTrash, faUser, faCarrot, faBoxesPacking, faUtensils, faXmark,
+    faBasketShopping, faPoo, faFlaskVial, faPenToSquare, faArrowDown19, faArrowDown91, faArrowDownAZ, faArrowDownZA,
+    faPencil, faCartArrowDown
 } from '@fortawesome/free-solid-svg-icons';
 import moment from "moment";
 import 'moment/locale/fr';
@@ -24,7 +19,8 @@ import {faFileLines, faCircle, faCircleCheck} from "@fortawesome/free-regular-sv
 library.add(
     faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight, faBasketShopping,
     faUser, faCheck, faXmark, faCircleNotch, faTrash, faPlus, faFileLines, faArrowLeftLong, faPoo, faCircle, faCircleCheck,
-    faFlaskVial, faPenToSquare, faArrowDown19, faArrowDown91, faArrowDownAZ, faArrowDownZA, faCarrot, faBoxesPacking
+    faFlaskVial, faPenToSquare, faArrowDown19, faArrowDown91, faArrowDownAZ, faArrowDownZA, faCarrot, faBoxesPacking,
+    faPencil, faCartArrowDown
 );
 
 const pinia = createPinia();

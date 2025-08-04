@@ -28,15 +28,19 @@ const showNutritionalDetails = ref<boolean>(false);
 const isToEdit = ref<boolean>(false);
 const showDatePicker = ref<boolean>(false);
 
-const addToShoppingList = (): void => {
+const toggleShoppingList = (): void => {
   axios.patch(
       `${getProductUrlByType(product.value)}/${product.value.id}`,
-      {addedToListAt: new Date()},
+      {addedToListAt: product.value.addedToListAt ? null : new Date()},
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   )
       .then(response => {
         product.value = response.data;
-        shoppingListCounterStore.addOne();
+        if (product.value.addedToListAt) {
+          shoppingListCounterStore.addOne();
+        } else {
+          shoppingListCounterStore.removeOne();
+        }
       })
 };
 
@@ -104,51 +108,87 @@ onMounted((): void => {
 </script>
 
 <template>
-  <div class="w-screen p-2">
-    <img
-        :src="product.image"
-        :alt="product.name"
-        class="w-full h-48 object-contain"
-    />
+  <div class="min-screen-height w-screen p-4 bg-gray-100 pb-24">
+    <p v-if="!isToEdit" class="text-center text-3xl">{{ product.name }}</p>
+    <input v-else v-model="product.name" class="w-full border text-center text-2xl"/>
 
-    <p v-if="!isToEdit" class="text-center mt-2">{{ product.name }}</p>
-    <input v-else v-model="product.name" class="w-full mt-2 border text-center"/>
-    <p v-if="!isToEdit" class="text-center">{{ product.description ?? 'Aucune description' }}</p>
-    <input v-else v-model="product.description" class="w-full border text-center" placeholder="Aucune description"/>
+    <div class="bg-white shadow mt-2 p-2">
+      <img
+          :src="product.image"
+          :alt="product.name"
+          class="w-full h-48 object-contain my-2.5"
+      />
 
-    <p class="font-semibold pt-3 pb-1">Expiration dates</p>
-    <p v-for="(expirationDate, index) in product.expirationDates" :key="index">
-      {{ moment(expirationDate.date).format('DD/MM/YYYY') }}
-      <button @click="removeExpirationDate(index)" class="btn border border-red-600 px-2 mb-1">remove</button>
-    </p>
-    <button @click="showDatePicker = true" class="btn border border-green-600 px-2 py-1 mb-1">Ajouter une date</button>
-    <br>
-    <button @click="removeExpirationDate()" class="btn border border-red-600 px-2 py-1">J'ai tout bouffé</button>
+      <div class="w-full flex justify-center items-baseline">
+        <Nutriscore class="mx-2.5" :nutriscore="product.nutriscore"/>
+        <Novagroup class="mx-2.5" :novagroup="product.novagroup"/>
+        <Ecoscore class="mx-2.5" :ecoscore="product.ecoscore"/>
+      </div>
+    </div>
+
+    <p class="font-semibold mt-3">Notes</p>
+    <div v-if="product.description || isToEdit" class="bg-white shadow-md p-2">
+      <p v-if="!isToEdit">{{ product.description }}</p>
+      <textarea rows="3" v-else v-model="product.description" class="w-full" placeholder="Aucune note"/>
+    </div>
+    <div v-else class="text-center italic">Aucune</div>
+
+    <template v-if="isToEdit">
+      <p class="font-semibold mt-3">Lien de l'image</p>
+      <div class="bg-white shadow-md p-2">
+        <input v-model="product.image" class="w-full"/>
+      </div>
+    </template>
+
+    <p class="w-full font-semibold mt-3">Date{{ product.expirationDates?.length > 1 ? 's' : '' }} d'expiration</p>
+    <div v-if="product.expirationDates?.length < 1" class="text-center italic">Aucune</div>
+    <div v-else class="bg-white shadow-md p-2">
+      <div class="grid grid-cols-2 gap-2 gap-x-5 mt-1 px-5 mb-1">
+        <button v-for="(expirationDate, index) in product.expirationDates" :key="index"
+                @click="removeExpirationDate(index)"
+                class="col-span-1 bg-red-400 text-white rounded py-0.5 text-sm">
+          {{ moment(expirationDate.date).format('DD/MM/YYYY') }}
+        </button>
+      </div>
+    </div>
+
+    <div class="flex justify-between my-4 px-5">
+      <button @click="showDatePicker = true" class="btn green-background text-white px-4 py-2 rounded">Ajouter une
+        date
+      </button>
+      <button @click="removeExpirationDate()" class="btn bg-red-400 text-white px-4 py-2 rounded">J'ai tout bouffé
+      </button>
+    </div>
 
     <p class="font-semibold pt-3 pb-1">Recettes associées</p>
-    <p>?</p>
+    <div class="text-center italic">Aucune recette associée</div>
+
+    <div class="flex justify-between my-4 px-5">
+      <button class="btn bg-indigo-400 text-white px-5 py-1.5 rounded">
+        <font-awesome-icon v-if="product.scanned" @click="showNutritionalDetails = true" icon="fa-solid fa-flask-vial"/>
+      </button>
+      <button v-if="!isToEdit" @click="isToEdit = true" class="btn green-background text-white px-5 py-1.5 rounded">
+        <font-awesome-icon icon="fa-solid fa-pencil"/>
+      </button>
+      <button v-else @click="edit" class="btn green-background text-white px-5 py-1.5 rounded">
+        <font-awesome-icon icon="fa-solid fa-check"/>
+      </button>
+      <button @click="toggleShoppingList"
+              :class="[product.addedToListAt ? 'green-color border border-emerald-600 bg-white' : 'green-background text-white', 'btn px-5 py-1.5 rounded']">
+        <font-awesome-icon v-if="product.addedToListAt" icon="fa-solid fa-cart-shopping"/>
+        <font-awesome-icon v-else icon="fa-solid fa-cart-arrow-down"/>
+      </button>
+      <button @click="isToRemove = true" class="btn bg-stone-500 text-white px-5 py-1.5 rounded">
+        <font-awesome-icon icon="fa-solid fa-trash"/>
+      </button>
+    </div>
 
     <p class="font-semibold pt-3 pb-1">Catégories</p>
-    <p>?</p>
-
-    <div class="w-full flex justify-evenly">
-      <Nutriscore :nutriscore="product.nutriscore"/>
-      <Novagroup :novagroup="product.novagroup"/>
-      <Ecoscore :ecoscore="product.ecoscore"/>
-    </div>
-
-    <div class="w-full flex justify-evenly text-3xl mt-5">
-      <font-awesome-icon v-if="product.scanned" @click="showNutritionalDetails = true" icon="fa-solid fa-flask-vial"/>
-      <font-awesome-icon @click="isToRemove = true" icon="fa-solid fa-trash"/>
-      <font-awesome-icon @click="addToShoppingList" icon="fa-solid fa-cart-shopping"
-                         :class="{ 'text-green-700' : product.addedToListAt }"/>
-      <font-awesome-icon v-if="!isToEdit" @click="isToEdit = true" icon="fa-solid fa-pen-to-square"/>
-      <font-awesome-icon v-else @click="edit" icon="fa-solid fa-pen-to-square"
-                         :class="{ 'text-green-700' : isToEdit }"/>
-    </div>
+    <div class="text-center italic">Aucune catégorie associée</div>
 
     <NutritionalDetails v-if="showNutritionalDetails"
-                        @closeNutritionalDetails="showNutritionalDetails = !showNutritionalDetails" :product="product"/>
+                        @closeNutritionalDetails="showNutritionalDetails = !showNutritionalDetails"
+                        :product="product"/>
 
     <Datepicker v-if="showDatePicker" :date="moment().format('L')" @update-date="addExpirationDate"/>
 

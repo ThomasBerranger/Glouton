@@ -7,7 +7,7 @@ const props = defineProps<{
   expirationDate: string | null;
 }>();
 
-const formattedNumber = ref<number>();
+const formattedNumber = ref<number | null>();
 const formattedUnit = ref<string>();
 const labelColor = ref<string>();
 
