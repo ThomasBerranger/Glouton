@@ -31,13 +31,14 @@ const isToEdit = ref<boolean>(false);
 const showDatePicker = ref<boolean>(false);
 
 const toggleShoppingList = (): void => {
+  product.value.addedToListAt = product.value.addedToListAt ? null : moment().format("L");
+
   axios.patch(
       `${getProductUrlByType(product.value)}/${product.value.id}`,
-      {addedToListAt: product.value.addedToListAt ? null : new Date()},
+      {addedToListAt: product.value.addedToListAt},
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   )
       .then(response => {
-        product.value = response.data;
         if (product.value.addedToListAt) {
           shoppingListCounterStore.addOne();
         } else {
@@ -65,7 +66,6 @@ const edit = (): void => {
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   )
       .then(response => {
-        product.value = response.data;
         isToEdit.value = false;
       })
 };

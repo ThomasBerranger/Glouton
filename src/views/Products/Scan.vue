@@ -2,7 +2,7 @@
 import {onMounted, ref} from 'vue'
 import {BrowserMultiFormatReader} from '@zxing/browser';
 import axios from "axios";
-import type {Product} from "@/interfaces/product.ts";
+import {isValidEcoscore, isValidNovaGroup, isValidNutriscore, type Product} from "@/interfaces/product.ts";
 import Ecoscore from "@/components/Product/Scores/Ecoscore.vue";
 import Nutriscore from "@/components/Product/Scores/Nutriscore.vue";
 import Novagroup from "@/components/Product/Scores/Novagroup.vue";
@@ -52,12 +52,15 @@ const fetchData = (): void => {
       .get(`https://world.openfoodfacts.org/api/v2/product/${code.value}.json?fields=product_name,nutriscore_data,ecoscore_data,selected_images,generic_name_fr,nova_group,categories_tags`)
       .then(response => {
         mode.value = 'found';
-        newProduct.value.barcode = code.value;
+
         newProduct.value.scanned = true;
+        newProduct.value.barcode = code.value;
         newProduct.value.name = response.data.product.product_name;
-        newProduct.value.nutriscore = response.data.product.nutriscore_data?.grade;
-        newProduct.value.ecoscore = response.data.product.ecoscore_data?.grade;
-        newProduct.value.novagroup = response.data.product.nova_group;
+
+        newProduct.value.nutriscore = isValidNutriscore(response.data.product.nutriscore_data?.grade) ? response.data.product.nutriscore_data?.grade : null;
+        newProduct.value.novagroup = isValidNovaGroup(response.data.product.nova_group) ? response.data.product.nova_group : null;
+        newProduct.value.ecoscore = isValidEcoscore(response.data.product.ecoscore_data?.grade) ? response.data.product.ecoscore_data?.grade : null;
+
         newProduct.value.description = response.data.product.generic_name_fr ? response.data.product.generic_name_fr.charAt(0).toUpperCase() + response.data.product.generic_name_fr.slice(1).toLowerCase() : '';
 
         images.value = manageImages(response.data.product.selected_images);
@@ -110,6 +113,8 @@ const submit = (): void => {
 
 onMounted((): void => {
   startScan();
+  code.value = '3274080005003';
+  fetchData();
 
   newProduct.value.expirationDates = [];
 });

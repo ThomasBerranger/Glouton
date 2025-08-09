@@ -9,6 +9,7 @@ import type {Product} from "@/interfaces/product.ts";
 import {getProductUrlByType, PRODUCT_SHOPPING_LIST_URL} from "@/constants/api.ts";
 import Datepicker from "@/components/Datepicker.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {productCategories} from "@/constants/productCategories.ts";
 
 const tokenStore = useTokenStore();
 const shoppingListCounterStore = useShoppingListCounterStore();
@@ -49,21 +50,24 @@ onMounted((): void => {
 
 <template>
   <div class="min-screen-height w-screen p-3 bg-gray-100">
-    <div class="flex items-center text-lg mt-1 mb-2">
-      <font-awesome-icon icon="fa-solid fa-carrot"/>
-      <p class="ml-1">Légumes</p>
-    </div>
-
-    <div v-for="product in shoppingListProducts"
-         class="flex justify-between items-center bg-white shadow-md mb-3 p-2 rounded"
-         @click="productToRemove = product">
-      <div class="flex">
-        <font-awesome-icon v-if="removedProducts.includes(product)" icon="fa-regular fa-circle-check"
-                           class="green-color text-xl"/>
-        <font-awesome-icon v-else icon="fa-regular fa-circle" class="text-xl"/>
-        <p :class="['ml-2', { 'line-through green-color': removedProducts.includes(product) }]">{{ product.name }}</p>
+    <div v-for="(product, index) in shoppingListProducts" :key="product.id">
+      <div v-if="index === 0 || product.category.id !== shoppingListProducts[index - 1]?.category.id"
+           class="flex items-center text-lg mt-1 mb-2">
+<!--        todo: trouver le bon icon -->
+        <font-awesome-icon icon="fa-solid fa-carrot"/>
+        <p class="ml-1">{{ product.category.name }}</p>
       </div>
-      <p class="text-sm">2 jours</p>
+
+      <div class="flex justify-between items-center bg-white shadow-md mb-3 p-2 rounded"
+           @click="productToRemove = product">
+        <div class="flex">
+          <font-awesome-icon v-if="removedProducts.includes(product)" icon="fa-regular fa-circle-check"
+                             class="green-color text-xl"/>
+          <font-awesome-icon v-else icon="fa-regular fa-circle" class="text-xl"/>
+          <p :class="['ml-2', { 'line-through green-color': removedProducts.includes(product) }]">{{ product.name }}</p>
+        </div>
+        <p class="text-sm">2 jours</p>
+      </div>
     </div>
 
     <Datepicker v-if="productToRemove" :date="moment().format('L')" @update-date="remove"/>
