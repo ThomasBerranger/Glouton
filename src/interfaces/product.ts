@@ -1,4 +1,6 @@
-import type { ExpirationDate } from '@/interfaces/expiration-date'
+import type { ExpirationDate } from '@/interfaces/expiration-date.ts';
+import type { Recipe } from '@/interfaces/recipe.ts';
+import type { Category } from "@/interfaces/category.ts";
 
 export interface Product {
     id: string;
@@ -13,5 +15,7 @@ export interface Product {
     ecoscore: string | undefined;
     expirationDates: ExpirationDate[];
     scanned: boolean,
-    closestExpirationDate : Date | null;
+    recipes: Recipe[];
+    closestExpirationDate : string | null;
+    category: number | Category;
 }

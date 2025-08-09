@@ -21,7 +21,7 @@ onMounted(async () => {
   axios.get(RECIPE_URL, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => recipes.value = response.data)
-      .catch(error => console.error("Recipes error:", error));
+      .catch(error => console.error("Recipe error:", error));
 });
 </script>
 
@@ -34,7 +34,7 @@ onMounted(async () => {
           <font-awesome-icon icon="fa-solid fa-trash"/>
         </button>
         <div class="pl-1.5 border-solid border-b-2">
-          <p>{{ recipe.name }}</p>
+          <p>{{ recipe.name }} {{ recipe.duration }}</p>
           <p v-for="product in recipe.products" class="italic">{{ product.name }}</p>
         </div>
       </li>

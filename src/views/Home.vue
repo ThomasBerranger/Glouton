@@ -2,19 +2,21 @@
 import {onMounted, ref} from "vue";
 import {RouterLink} from "vue-router";
 import axios from "axios";
-import moment from "moment";
 import {useTokenStore} from "@/stores/token";
 import type {Product} from "@/interfaces/product";
 import type {Recipe} from "@/interfaces/recipe";
 import {PRODUCT_URL, RECIPE_URL} from "@/constants/api.ts";
+import ExpirationLabel from "@/components/Product/ExpirationLabel.vue";
+import kitchenImg from '@/assets/kitchen.png'
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import List from "@/components/Recipe/List.vue";
 
 const tokenStore = useTokenStore();
 const products = ref<Product[]>([]);
 const recipes = ref<Recipe[]>([]);
-const shoppingListCount = ref<number>(0);
 
 onMounted(async () => {
-  axios.get(`${PRODUCT_URL}?limit=10`, {
+  axios.get(`${PRODUCT_URL}?limit=15`, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => products.value = response.data)
       .catch(error => console.error("Products error:", error));
@@ -22,63 +24,45 @@ onMounted(async () => {
   axios.get(RECIPE_URL, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => recipes.value = response.data)
-      .catch(error => console.error("Recipes error:", error));
-
-  axios.get(
-      `${PRODUCT_URL}/shopping-list?count=true`,
-      {headers: {Authorization: `Bearer ${tokenStore.token}`}}
-  ).then(response => shoppingListCount.value = response.data)
-      .catch(error => console.error("Shopping list error:", error));
+      .catch(error => console.error("Recipe error:", error));
 });
 </script>
 
 <template>
-  <div class="screen-height">
+  <div class="screen-height bg-gray-100">
 
-    <section class="h-3/5 w-screen p-1 grid gap-1 grid-cols-4 grid-rows-3">
+    <section class="grid grid-cols-4 gap-3 p-3">
       <router-link :to="{name: 'product.details', params: { id: product.id }}"
-                   v-for="product in products" class="relative p-1">
+                   v-for="product in products" class="relative bg-white shadow-md">
+        <ExpirationLabel :expiration-date="product.expirationDates[0].date"/>
         <img
             :src="product.image"
             :alt="product.name"
-            class="w-full h-full object-contain"
+            class="h-24 w-full aspect-square object-contain p-1"
         />
-        <div class="absolute bottom-0 right-0 p-2 bg-red-300">
-          {{ moment(product.expirationDates[0].date).diff(moment(), 'days') }}
-        </div>
       </router-link>
 
       <router-link
           to="/products"
-          class="col-span-2 flex justify-center items-center relative rounded-xl border border-1 text-white font-semibold bg-green-600 opacity-60"
+          class="flex justify-center items-center relative rounded-xl border border-1 text-white green-background text-3xl"
       >
-        Tout voir
+        <img :src="kitchenImg" alt="kitchen logo" class="brightness-0 invert"/>
       </router-link>
     </section>
 
-    <section class="h-1/5 border border-1 border-red-600">
-      <ul>
-        <li v-for="recipe in recipes" class="p-2">
-          - {{ recipe.name }} : {{ recipe.duration }}
-        </li>
-      </ul>
-      <div class="flex justify-center">
-      <router-link
-          to="/recipes"
-          class="w-1/2 text-center rounded border border-1 text-white font-semibold bg-orange-600 opacity-60"
-      >
-        Recettes
-      </router-link>
+    <section>
+      <div class="flex justify-center bg-white mb-2 px-3">
+        <router-link
+            to="/recipes"
+            class="w-full green-background text-white font-title tracking-wider py-0.5 text-center"
+        >
+          Recettes
+        </router-link>
+      </div>
+
+      <div class="px-3">
+        <List :recipes="recipes"/>
       </div>
     </section>
-
-    <router-link to="/shopping-list" class="focus:outline-none tap-highlight-transparent">
-      <section class="h-1/5 border border-1 border-green-600 p-2">
-        <span class="font-semibold text-green-600">{{ shoppingListCount }}</span>
-        produit{{ shoppingListCount > 1 ? "s" : "" }}
-        dans la liste de course.
-      </section>
-    </router-link>
-
   </div>
 </template>
