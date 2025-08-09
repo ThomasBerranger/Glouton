@@ -5,7 +5,7 @@ import type {Product} from "@/interfaces/product";
 import {useTokenStore} from "@/stores/token.ts";
 import {useProductOrderStore} from "@/stores/productOrder.ts";
 import {PRODUCT_URL} from "@/constants/api.ts";
-import ExpirationLabel from "@/components/ExpirationLabel.vue";
+import ExpirationLabel from "@/components/Product/ExpirationLabel.vue";
 import {PRODUCT_ORDER} from "@/constants/productOrder.ts";
 
 const tokenStore = useTokenStore();

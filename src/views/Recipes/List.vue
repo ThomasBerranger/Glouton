@@ -21,7 +21,7 @@ onMounted(async () => {
   axios.get(RECIPE_URL, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => recipes.value = response.data)
-      .catch(error => console.error("Recipes error:", error));
+      .catch(error => console.error("Recipe error:", error));
 });
 </script>
 

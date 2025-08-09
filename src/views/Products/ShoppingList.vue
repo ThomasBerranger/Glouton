@@ -18,21 +18,25 @@ const productToRemove = ref<Product | null>(null);
 const removedProducts = ref<Product[]>([]);
 
 const remove = (expirationDate: string | null): void => {
-  axios.patch(
-      `${getProductUrlByType(productToRemove.value)}/${productToRemove.value.id}`,
-      {
-        addedToListAt: null,
-        expirationDates: [{
-          date: expirationDate
-        }]
-      },
-      {headers: {Authorization: `Bearer ${tokenStore.token}`}}
-  )
-      .then(response => {
-        removedProducts.value.push(productToRemove.value);
-        productToRemove.value = null;
-        shoppingListCounterStore.removeOne();
-      })
+  if (productToRemove.value !== null && expirationDate) {
+    productToRemove.value?.expirationDates.push({date: expirationDate});
+
+    axios.patch(
+        `${getProductUrlByType(productToRemove.value)}/${productToRemove.value.id}`,
+        {
+          addedToListAt: null,
+          expirationDates: productToRemove.value.expirationDates
+        },
+        {headers: {Authorization: `Bearer ${tokenStore.token}`}}
+    )
+        .then(response => {
+          if (productToRemove.value !== null) {
+            removedProducts.value.push(productToRemove.value);
+            productToRemove.value = null;
+            shoppingListCounterStore.removeOne();
+          }
+        })
+  }
 };
 
 onMounted((): void => {

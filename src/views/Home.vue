@@ -6,9 +6,10 @@ import {useTokenStore} from "@/stores/token";
 import type {Product} from "@/interfaces/product";
 import type {Recipe} from "@/interfaces/recipe";
 import {PRODUCT_URL, RECIPE_URL} from "@/constants/api.ts";
-import ExpirationLabel from "@/components/ExpirationLabel.vue";
+import ExpirationLabel from "@/components/Product/ExpirationLabel.vue";
 import kitchenImg from '@/assets/kitchen.png'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import List from "@/components/Recipe/List.vue";
 
 const tokenStore = useTokenStore();
 const products = ref<Product[]>([]);
@@ -23,7 +24,7 @@ onMounted(async () => {
   axios.get(RECIPE_URL, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => recipes.value = response.data)
-      .catch(error => console.error("Recipes error:", error));
+      .catch(error => console.error("Recipe error:", error));
 });
 </script>
 
@@ -59,20 +60,8 @@ onMounted(async () => {
         </router-link>
       </div>
 
-      <div class="px-3 pb-28">
-        <div v-for="recipe in recipes" class="flex justify-between bg-white shadow-md mb-2 p-2">
-          <div class="pr-2">{{ recipe.name }}</div>
-          <div class="flex items-center gap-2">
-            <div
-                class="flex items-center font-semibold text-sm border border-1 border-emerald-600 green-color rounded px-1.5 h-6 tracking-widest">
-              1
-              <font-awesome-icon icon="fa-solid fa-basket-shopping"/>
-            </div>
-            <div class="flex items-center rounded text-sm px-1.5 h-6 tracking-wider">
-              {{ recipe.duration?.slice(0, -3) }}
-            </div>
-          </div>
-        </div>
+      <div class="px-3">
+        <List :recipes="recipes"/>
       </div>
     </section>
   </div>

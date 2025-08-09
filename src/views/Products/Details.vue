@@ -16,6 +16,8 @@ import NutritionalDetails from "@/components/Product/NutritionalDetails.vue";
 import Datepicker from "@/components/Datepicker.vue";
 import type {ExpirationDate} from "@/interfaces/expiration-date.ts";
 import {useShoppingListCounterStore} from "@/stores/shoppingListCount.ts";
+import List from "@/components/Recipe/List.vue";
+import {productCategories} from "@/constants/productCategories.ts";
 
 const route = useRoute();
 const tokenStore = useTokenStore();
@@ -100,10 +102,23 @@ const patchExpirationDates = (): void => {
   )
 };
 
+watch(() => product.value.category, async (newCategory, oldCategory) => {
+  if (oldCategory && oldCategory !== newCategory) {
+    axios.patch(
+        `${getProductUrlByType(product.value)}/${product.value.id}`,
+        {category: product.value.category},
+        {headers: {Authorization: `Bearer ${tokenStore.token}`}}
+    )
+  }
+});
+
 onMounted((): void => {
   axios.get(`${PRODUCT_URL}/${productId}`, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
-  }).then(response => product.value = response.data);
+  }).then(response => {
+    product.value = response.data;
+    product.value.category = product.value.category.id;
+  });
 });
 </script>
 
@@ -131,7 +146,7 @@ onMounted((): void => {
       <p v-if="!isToEdit">{{ product.description }}</p>
       <textarea rows="3" v-else v-model="product.description" class="w-full" placeholder="Aucune note"/>
     </div>
-    <div v-else class="text-center italic">Aucune</div>
+    <div v-else class="text-center italic">Aucune note associée</div>
 
     <template v-if="isToEdit">
       <p class="font-semibold mt-3">Lien de l'image</p>
@@ -141,50 +156,48 @@ onMounted((): void => {
     </template>
 
     <p class="w-full font-semibold mt-3">Date{{ product.expirationDates?.length > 1 ? 's' : '' }} d'expiration</p>
-    <div v-if="product.expirationDates?.length < 1" class="text-center italic">Aucune</div>
-    <div v-else class="bg-white shadow-md p-2">
+    <div class="bg-white shadow-md p-2">
       <div class="grid grid-cols-2 gap-2 gap-x-5 mt-1 px-5 mb-1">
         <button v-for="(expirationDate, index) in product.expirationDates" :key="index"
                 @click="removeExpirationDate(index)"
-                class="col-span-1 bg-red-400 text-white rounded py-0.5 text-sm">
+                class="col-span-1 bg-red-400 text-white rounded py-0.5 text-sm tracking-wider">
           {{ moment(expirationDate.date).format('DD/MM/YYYY') }}
+        </button>
+        <button @click="showDatePicker = true" class="col-span-1 green-background text-white rounded py-0.5 text-sm">
+          Ajouter
         </button>
       </div>
     </div>
 
-    <div class="flex justify-between my-4 px-5">
-      <button @click="showDatePicker = true" class="btn green-background text-white px-4 py-2 rounded">Ajouter une
-        date
-      </button>
-      <button @click="removeExpirationDate()" class="btn bg-red-400 text-white px-4 py-2 rounded">J'ai tout bouffé
-      </button>
-    </div>
+    <p class="font-semibold pt-3">Catégorie</p>
+    <select v-model="product.category" class="w-full bg-white shadow-md p-2">
+      <option v-for="(label, id) in productCategories" :value="id" :key="id">{{ label }}</option>
+    </select>
 
-    <p class="font-semibold pt-3 pb-1">Recettes associées</p>
-    <div class="text-center italic">Aucune recette associée</div>
+    <p class="font-semibold pt-3">Recettes associées</p>
+    <List :recipes="product.recipes" v-if="product.recipes?.length > 0"/>
+    <div v-else class="text-center italic">Aucune recette associée</div>
 
-    <div class="flex justify-between my-4 px-5">
-      <button class="btn bg-indigo-400 text-white px-5 py-1.5 rounded">
-        <font-awesome-icon v-if="product.scanned" @click="showNutritionalDetails = true" icon="fa-solid fa-flask-vial"/>
+    <div class="flex gap-5 justify-between my-4 px-5">
+      <button v-if="product.scanned" class="grow btn bg-indigo-400 text-white px-5 py-1.5 rounded">
+        <font-awesome-icon @click="showNutritionalDetails = true" icon="fa-solid fa-flask-vial"/>
       </button>
-      <button v-if="!isToEdit" @click="isToEdit = true" class="btn green-background text-white px-5 py-1.5 rounded">
+      <button v-if="!isToEdit" @click="isToEdit = true"
+              class="grow btn green-background text-white px-5 py-1.5 rounded">
         <font-awesome-icon icon="fa-solid fa-pencil"/>
       </button>
-      <button v-else @click="edit" class="btn green-background text-white px-5 py-1.5 rounded">
+      <button v-else @click="edit" class="grow btn green-background text-white px-5 py-1.5 rounded">
         <font-awesome-icon icon="fa-solid fa-check"/>
       </button>
       <button @click="toggleShoppingList"
-              :class="[product.addedToListAt ? 'green-color border border-emerald-600 bg-white' : 'green-background text-white', 'btn px-5 py-1.5 rounded']">
+              :class="[product.addedToListAt ? 'green-color border border-emerald-600 bg-white' : 'green-background text-white', 'grow btn px-5 py-1.5 rounded']">
         <font-awesome-icon v-if="product.addedToListAt" icon="fa-solid fa-cart-shopping"/>
         <font-awesome-icon v-else icon="fa-solid fa-cart-arrow-down"/>
       </button>
-      <button @click="isToRemove = true" class="btn bg-stone-500 text-white px-5 py-1.5 rounded">
+      <button @click="isToRemove = true" class="grow btn bg-stone-500 text-white px-5 py-1.5 rounded">
         <font-awesome-icon icon="fa-solid fa-trash"/>
       </button>
     </div>
-
-    <p class="font-semibold pt-3 pb-1">Catégories</p>
-    <div class="text-center italic">Aucune catégorie associée</div>
 
     <NutritionalDetails v-if="showNutritionalDetails"
                         @closeNutritionalDetails="showNutritionalDetails = !showNutritionalDetails"

@@ -20,13 +20,11 @@ const confirm = (): void => {
   <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-10 h-screen animate-overlay"
        @click="$emit('closeConfirmation', false)">
 
-    <div class="w-3/4 bg-white z-20 p-2 rounded animate-modal" @click.stop>
+    <div class="w-3/4 bg-white z-20 p-3 rounded animate-modal" @click.stop>
       <h1 class="text-xl">Attention</h1>
       <p class="py-2" v-html="props.body"></p>
       <div class="w-full flex justify-end">
-        <button class="btn py-1.5 px-3 rounded border border-red-400"
-                @click="confirm()">Oui
-        </button>
+        <button class="btn py-1 px-3 rounded bg-red-400 text-white" @click="confirm()">Oui</button>
       </div>
     </div>
 

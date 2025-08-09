@@ -7,7 +7,7 @@ import {PRODUCT_URL, RECIPE_URL} from "@/constants/api.ts";
 import router from "@/router";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {RouterLink} from "vue-router";
-import ExpirationLabel from "@/components/ExpirationLabel.vue";
+import ExpirationLabel from "@/components/Product/ExpirationLabel.vue";
 
 const tokenStore = useTokenStore();
 const products = ref<Product[]>([]);
@@ -52,7 +52,7 @@ onMounted(async () => {
   axios.get(PRODUCT_URL, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => products.value = response.data)
-      .catch(error => console.error("Recipes error:", error));
+      .catch(error => console.error("Recipe error:", error));
 });
 </script>
 

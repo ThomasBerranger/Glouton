@@ -12,6 +12,7 @@ import type {ExpirationDate} from "@/interfaces/expiration-date.ts";
 import {getProductUrlByType} from "@/constants/api.ts";
 import {useTokenStore} from "@/stores/token.ts";
 import router from "@/router";
+import {selectBestCategory, productCategories} from '@/constants/productCategories.ts'
 
 const tokenStore = useTokenStore();
 
@@ -48,7 +49,7 @@ const fetchData = (): void => {
   if (!code.value) return;
 
   axios
-      .get(`https://world.openfoodfacts.org/api/v2/product/${code.value}.json?fields=product_name,nutriscore_data,ecoscore_data,selected_images,generic_name_fr,nova_group`)
+      .get(`https://world.openfoodfacts.org/api/v2/product/${code.value}.json?fields=product_name,nutriscore_data,ecoscore_data,selected_images,generic_name_fr,nova_group,categories_tags`)
       .then(response => {
         mode.value = 'found';
         newProduct.value.barcode = code.value;
@@ -61,11 +62,16 @@ const fetchData = (): void => {
 
         images.value = manageImages(response.data.product.selected_images);
 
-        showDatePicker.value = true;
+        const selectedCategory = selectBestCategory(response.data.product.categories_tags);
+
+        newProduct.value.category = selectedCategory && selectedCategory.selectedCategory ? parseInt(selectedCategory.selectedCategory) : 7;
       })
       .catch(error => {
         mode.value = 'manual';
         newProduct.value.barcode = code.value;
+        newProduct.value.category = 7;
+      })
+      .finally(() => {
         showDatePicker.value = true;
       })
 }
@@ -81,8 +87,6 @@ const manageImages = (availableImages: string[]): string[] => {
 };
 
 const addExpirationDate = (expirationDate: string | null): void => {
-  console.log(expirationDate);
-
   if (!expirationDate) return;
 
   const newExpirationDate: ExpirationDate = {
@@ -116,7 +120,7 @@ onMounted((): void => {
     <section v-if="mode === 'scanning'">
       <video ref="videoRef"></video>
 
-      <button @click="mode = 'manual'; showDatePicker = true;"
+      <button @click="mode = 'manual'; showDatePicker = true; newProduct.category = 7;"
               class="green-background mt-5 px-3 py-1.5 text-white rounded">
         Ajouter un produit sans code-barres
       </button>
@@ -141,14 +145,6 @@ onMounted((): void => {
         <Novagroup :novagroup="newProduct.novagroup"/>
         <Ecoscore :ecoscore="newProduct.ecoscore"/>
       </div>
-
-      <br>
-      <div class="flex-row justify-center">
-        <p @click="showDatePicker = true">Dates d'expirations :</p>
-        <p v-for="expirationDate in newProduct.expirationDates" class="font-light">
-          {{ moment(expirationDate.date).format('L') }}
-        </p>
-      </div>
     </section>
 
     <section v-else>
@@ -165,19 +161,23 @@ onMounted((): void => {
         <input v-model="newProduct.image" class="w-3/4 border border-green-800 rounded px-2 py-1" type="text">
         <img v-if="newProduct.image" :src="newProduct.image" class="h-32 m-auto" :alt="newProduct.name">
 
-        <br>
-        <br>
-
-        <div class="flex-row justify-center">
-          <p @click="showDatePicker = true">Dates d'expirations :</p>
-          <p v-for="expirationDate in newProduct.expirationDates" class="font-light">
-            {{ moment(expirationDate.date).format('L') }}
-          </p>
+        <div class="flex-row mt-3">
+          <p class="text-xl font-light mt-3">Catégorie</p>
+          <select v-model="newProduct.category" class="w-3/4 p-1.5">
+            <option v-for="(label, id) in productCategories" :value="id" :key="id">{{ label }}</option>
+          </select>
         </div>
       </div>
     </section>
 
     <section v-if="mode !== 'scanning'" class="mt-1">
+      <div class="flex-row justify-center">
+        <p @click="showDatePicker = true">Dates d'expirations :</p>
+        <p v-for="expirationDate in newProduct.expirationDates" class="font-light">
+          {{ moment(expirationDate.date).format('L') }}
+        </p>
+      </div>
+
       <button @click="showDatePicker = true" class="btn green-background text-xs text-white px-3 py-1.5 rounded">
         Ajouter
       </button>
