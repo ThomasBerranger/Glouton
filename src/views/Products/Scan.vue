@@ -54,7 +54,7 @@ const fetchData = (): void => {
   }).then(response => {
     router.push({
       name: 'product.details',
-      params: { id: response.data.id }
+      params: {id: response.data.id}
     })
   });
 
@@ -65,7 +65,8 @@ const fetchData = (): void => {
 
         newProduct.value.scanned = true;
         newProduct.value.barcode = code.value;
-        newProduct.value.name = response.data.product.product_name;
+        newProduct.value.name = response.data.product.product_name.charAt(0).toUpperCase() + response.data.product.product_name.slice(1).toLowerCase();
+        ;
 
         newProduct.value.nutriscore = isValidNutriscore(response.data.product.nutriscore_data?.grade) ? response.data.product.nutriscore_data?.grade : null;
         newProduct.value.novagroup = isValidNovaGroup(response.data.product.nova_group) ? response.data.product.nova_group : null;
@@ -129,7 +130,7 @@ onMounted((): void => {
 </script>
 
 <template>
-  <div class="min-screen-height w-screen text-center">
+  <div class="min-screen-height w-screen px-3">
     <section v-if="mode === 'scanning'">
       <video ref="videoRef"></video>
 
@@ -139,21 +140,23 @@ onMounted((): void => {
       </button>
     </section>
 
-    <section v-else-if="mode === 'found'">
-      <h1 class="text-2xl mt-3">{{ newProduct.name }}</h1>
-      <p class="text-xl font-light">{{ newProduct.description }}</p>
+    <section v-else-if="mode === 'found'" class="px-5">
 
-      <p class="mt-3">Images</p>
+      <h1 class="font-semibold text-2xl my-3 text-center">{{ newProduct.name }}</h1>
+
+      <p class="font-light">{{ newProduct.description }}</p>
+
+      <p class="font-semibold mt-4 mb-3">Image{{ images.length > 1 ? 's' : '' }}</p>
       <div class="flex justify-evenly mt-2">
         <img
             v-for="image in images" :key="image"
             :src="image" :alt="`${newProduct.name} image`"
-            :class="[image === newProduct.image ? 'opacity-100' : 'opacity-50', 'w-20']"
+            :class="[image === newProduct.image ? 'opacity-100' : 'opacity-50', 'h-24 aspect-square object-contain']"
             @click="newProduct.image = image"
         >
       </div>
 
-      <div class="w-full flex justify-evenly mt-5">
+      <div class="w-full flex justify-center items-baseline gap-5 my-5">
         <Nutriscore :nutriscore="newProduct.nutriscore"/>
         <Novagroup :novagroup="newProduct.novagroup"/>
         <Ecoscore :ecoscore="newProduct.ecoscore"/>
@@ -161,47 +164,51 @@ onMounted((): void => {
     </section>
 
     <section v-else>
-      <div class="w-full justify-center mb-4">
-        <p v-if="newProduct.barcode" class="mt-2 text-red-500">Produit inconnu</p>
+      <div class="w-full px-5 my-4">
+        <p v-if="newProduct.barcode" class="mt-2 text-red-400 font-semibold">Produit inconnu</p>
 
-        <h1 class="text-2xl mt-3">Nom</h1>
-        <input v-model="newProduct.name" class="w-3/4 border border-green-800 rounded px-2 py-1" type="text">
+        <p class="font-semibold mt-3">Nom</p>
+        <input v-model="newProduct.name" class="w-full border p-2"/>
 
-        <p class="text-xl font-light mt-3">Description</p>
-        <input v-model="newProduct.description" class="w-3/4 border border-green-800 rounded px-2 py-1" type="text">
+        <p class="font-semibold mt-3">Notes</p>
+        <textarea rows="3" v-model="newProduct.description" class="w-full p-2" placeholder="Aucune note"/>
 
-        <p class="text-xl font-light mt-3">Image (url)</p>
-        <input v-model="newProduct.image" class="w-3/4 border border-green-800 rounded px-2 py-1" type="text">
+        <p class="font-semibold mt-3">Image (url)</p>
+        <input v-model="newProduct.image" class="w-full border p-2"/>
         <img v-if="newProduct.image" :src="newProduct.image" class="h-32 m-auto" :alt="newProduct.name">
       </div>
     </section>
 
-    <section v-if="mode !== 'scanning'" class="mt-1">
+    <section v-if="mode !== 'scanning'" class="px-5 mt-1">
       <div class="flex-row mt-3">
-        <p class="text-xl font-light mt-3">Catégorie</p>
-        <select v-model="newProduct.category" class="w-3/4 p-1.5">
+        <p class="font-semibold mt-3">Catégorie</p>
+        <select v-model="newProduct.category" class="w-full p-2">
           <option v-for="(category, id) in productCategories" :value="id" :key="id">{{ category.name }}</option>
         </select>
       </div>
 
-      <div class="flex-row justify-center">
-        <p @click="showDatePicker = true">Dates d'expirations :</p>
-        <p v-for="expirationDate in newProduct.expirationDates" class="font-light">
-          {{ moment(expirationDate.date).format('L') }}
-        </p>
+      <div class="flex-row justify-center mt-4">
+        <p @click="showDatePicker = true" class="font-semibold">Dates d'expirations :</p>
+        <div class="grid grid-cols-2 gap-2 gap-x-5 mt-1 px-5 mb-1">
+          <button v-for="expirationDate in newProduct.expirationDates" type="button"
+                  class="col-span-1 bg-red-400 text-white rounded py-0.5 text-sm tracking-wider">
+            {{ moment(expirationDate.date).format('L') }}
+          </button>
+          <button @click="showDatePicker = true"
+                  class="col-span-1 green-background text-white rounded py-0.5 text-sm tracking-wider">
+            Ajouter
+          </button>
+        </div>
       </div>
 
-      <button @click="showDatePicker = true" class="btn green-background text-xs text-white px-3 py-1.5 rounded">
-        Ajouter
-      </button>
-
-      <br><br>
-
-      <button v-if="!newProduct.name || !newProduct.expirationDates"
-              class="btn green-background opacity-50 text-white px-3 py-1.5 rounded">
-        Enregistrer
-      </button>
-      <button v-else @click="submit" class="btn green-background text-white px-3 py-1.5 rounded">Enregistrer</button>
+      <div class="flex justify-center">
+        <button v-if="!newProduct.name || !newProduct.expirationDates"
+                class="btn green-background opacity-50 text-white mt-5 px-3 py-1.5 rounded">
+          Enregistrer
+        </button>
+        <button v-else @click="submit" class="btn green-background text-white mt-5 px-3 py-1.5 rounded">Enregistrer
+        </button>
+      </div>
     </section>
 
     <Datepicker v-if="showDatePicker" :date="moment().format('L')" @update-date="addExpirationDate"/>

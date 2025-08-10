@@ -6,10 +6,9 @@ import {useTokenStore} from "@/stores/token";
 import type {Product} from "@/interfaces/product";
 import type {Recipe} from "@/interfaces/recipe";
 import {PRODUCT_URL, RECIPE_URL} from "@/constants/api.ts";
-import ExpirationLabel from "@/components/Product/ExpirationLabel.vue";
 import kitchenImg from '@/assets/kitchen.png'
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import List from "@/components/Recipe/List.vue";
+import Card from "@/components/Product/Card.vue";
 
 const tokenStore = useTokenStore();
 const products = ref<Product[]>([]);
@@ -32,15 +31,7 @@ onMounted(async () => {
   <div class="screen-height w-screen bg-gray-100">
 
     <section class="grid grid-cols-4 gap-3 p-3">
-      <router-link :to="{name: 'product.details', params: { id: product.id }}"
-                   v-for="product in products" class="relative bg-white shadow-md">
-        <ExpirationLabel :expiration-date="product.expirationDates[0].date"/>
-        <img
-            :src="product.image"
-            :alt="product.name"
-            class="h-24 w-full aspect-square object-contain p-1"
-        />
-      </router-link>
+      <Card v-for="product in products" :product="product" :display-title="false" :key="product.id"/>
 
       <router-link
           to="/products"

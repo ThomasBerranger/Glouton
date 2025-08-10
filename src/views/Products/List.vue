@@ -5,14 +5,17 @@ import type {Product} from "@/interfaces/product";
 import {useTokenStore} from "@/stores/token.ts";
 import {useProductOrderStore} from "@/stores/productOrder.ts";
 import {PRODUCT_URL} from "@/constants/api.ts";
-import ExpirationLabel from "@/components/Product/ExpirationLabel.vue";
 import {PRODUCT_ORDER} from "@/constants/productOrder.ts";
+import DefaultList from "@/components/Product/DefaultList.vue";
+import ListByCategory from "@/components/Product/ListByCategory.vue";
+import Shelves from '@/assets/shelves.png'
 
 const tokenStore = useTokenStore();
 const productOrderStore = useProductOrderStore();
 
 const products = ref<Product[]>([]);
 const productOrder = ref(PRODUCT_ORDER[productOrderStore.productOrderKey]);
+const defaultListMode = ref<boolean>(true);
 
 const changeOrder = (): void => {
   productOrderStore.setProductOrder(productOrder.value.nextKey);
@@ -43,26 +46,14 @@ onMounted(async () => {
         <font-awesome-icon :icon="productOrder.icon" class="text-2xl pl-1"/>
       </button>
 
-      <button class="rounded-md text-white green-background p-1">
-        <font-awesome-icon icon="fa-solid fa-carrot" class="text-2xl pl-5 pr-4"/>
+      <button @click="defaultListMode = !defaultListMode" class="rounded-md text-white green-background p-2 px-4">
+        <img :src="Shelves" alt="kitchen logo" class="brightness-0 invert h-8"/>
       </button>
     </div>
 
-    <div class="grid grid-cols-4 gap-3 pb-32 text-center p-3">
-      <template v-for="product in products">
-
-        <router-link :to="{name: 'product.details', params: { id: product.id }}"
-                     class="relative bg-white shadow-md">
-          <ExpirationLabel :expiration-date="product.closestExpirationDate" :key="product.id"/>
-          <img
-              :src="product.image"
-              :alt="product.name"
-              class="h-24 w-full aspect-square object-contain p-1"
-          />
-          <p class="text-xs my-2 px-1 truncate">{{ product.name }}</p>
-        </router-link>
-
-      </template>
-    </div>
+    <component
+        :is="defaultListMode ? DefaultList : ListByCategory"
+        :products="products"
+    />
   </div>
 </template>

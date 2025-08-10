@@ -161,7 +161,7 @@ onMounted((): void => {
         <button v-for="(expirationDate, index) in product.expirationDates" :key="index"
                 @click="removeExpirationDate(index)"
                 class="col-span-1 bg-red-400 text-white rounded py-0.5 text-sm tracking-wider">
-          {{ moment(expirationDate.date).format('DD/MM/YYYY') }}
+          {{ moment(expirationDate.date).format('L') }}
         </button>
         <button @click="showDatePicker = true" class="col-span-1 green-background text-white rounded py-0.5 text-sm">
           Ajouter
