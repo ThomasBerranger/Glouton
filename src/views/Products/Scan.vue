@@ -9,7 +9,7 @@ import Novagroup from "@/components/Product/Scores/Novagroup.vue";
 import moment from "moment";
 import Datepicker from "@/components/Datepicker.vue";
 import type {ExpirationDate} from "@/interfaces/expiration-date.ts";
-import {getProductUrlByType} from "@/constants/api.ts";
+import {getProductUrlByType, PRODUCT_URL, SCANNED_PRODUCT_URL} from "@/constants/api.ts";
 import {useTokenStore} from "@/stores/token.ts";
 import router from "@/router";
 import {selectBestCategory, productCategories} from '@/constants/productCategories.ts'
@@ -38,6 +38,7 @@ const startScan = async () => {
     if (result) {
       code.value = result.getText();
       videoRef.value = null;
+
       fetchData();
     }
   } catch (error) {
@@ -47,6 +48,15 @@ const startScan = async () => {
 
 const fetchData = (): void => {
   if (!code.value) return;
+
+  axios.get(`${SCANNED_PRODUCT_URL}?barcode=${code.value}`, {
+    headers: {Authorization: `Bearer ${tokenStore.token}`},
+  }).then(response => {
+    router.push({
+      name: 'product.details',
+      params: { id: response.data.id }
+    })
+  });
 
   axios
       .get(`https://world.openfoodfacts.org/api/v2/product/${code.value}.json?fields=product_name,nutriscore_data,ecoscore_data,selected_images,generic_name_fr,nova_group,categories_tags`)
@@ -113,8 +123,6 @@ const submit = (): void => {
 
 onMounted((): void => {
   startScan();
-  code.value = '3274080005003';
-  fetchData();
 
   newProduct.value.expirationDates = [];
 });
