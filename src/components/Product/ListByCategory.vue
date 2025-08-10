@@ -3,7 +3,6 @@ import type {Product} from "@/interfaces/product";
 import {computed, onMounted, ref} from "vue";
 import {productCategories} from "@/constants/productCategories.ts";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import ExpirationLabel from "@/components/Product/ExpirationLabel.vue";
 import Card from "@/components/Product/Card.vue";
 
 const props = defineProps<{
