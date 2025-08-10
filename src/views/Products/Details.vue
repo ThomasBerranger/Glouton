@@ -171,7 +171,7 @@ onMounted((): void => {
 
     <p class="font-semibold pt-3">Catégorie</p>
     <select v-model="product.category" class="w-full bg-white shadow-md p-2">
-      <option v-for="(label, id) in productCategories" :value="id" :key="id">{{ label }}</option>
+      <option v-for="(category, id) in productCategories" :value="id" :key="id">{{ category.name }}</option>
     </select>
 
     <p class="font-semibold pt-3">Recettes associées</p>

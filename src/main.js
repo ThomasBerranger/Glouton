@@ -10,7 +10,7 @@ import {
     faArrowLeftLong, faBarcode, faCartShopping, faCheck, faChevronDown, faChevronLeft, faChevronRight,
     faChevronUp, faCircleNotch, faPlus, faTrash, faUser, faCarrot, faBoxesPacking, faUtensils, faXmark,
     faBasketShopping, faPoo, faFlaskVial, faPenToSquare, faArrowDown19, faArrowDown91, faArrowDownAZ, faArrowDownZA,
-    faPencil, faCartArrowDown
+    faPencil, faCartArrowDown, faCheese, faWheatAwn, faDrumstickBite, faCookieBite, faBottleWater, faShoppingBasket
 } from '@fortawesome/free-solid-svg-icons';
 import moment from "moment";
 import 'moment/locale/fr';
@@ -20,7 +20,7 @@ library.add(
     faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight, faBasketShopping,
     faUser, faCheck, faXmark, faCircleNotch, faTrash, faPlus, faFileLines, faArrowLeftLong, faPoo, faCircle, faCircleCheck,
     faFlaskVial, faPenToSquare, faArrowDown19, faArrowDown91, faArrowDownAZ, faArrowDownZA, faCarrot, faBoxesPacking,
-    faPencil, faCartArrowDown
+    faPencil, faCartArrowDown, faCheese, faWheatAwn, faDrumstickBite, faCookieBite, faBottleWater, faShoppingBasket
 );
 
 const pinia = createPinia();

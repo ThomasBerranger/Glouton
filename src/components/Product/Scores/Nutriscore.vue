@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 
 const props = defineProps<{
-  nutriscore: string | undefined
+  nutriscore: string | null | undefined
 }>();
 
 </script>

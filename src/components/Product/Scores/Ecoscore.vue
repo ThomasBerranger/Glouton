@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 
 const props = defineProps<{
-  ecoscore: string | undefined
+  ecoscore: string | null | undefined
 }>();
 </script>
 

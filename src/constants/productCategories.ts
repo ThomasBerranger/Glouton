@@ -101,15 +101,14 @@ function selectBestCategory(categoriesTags: string[]): ClassificationResult {
     };
 }
 
-// Category display names
-const productCategories: Record<string, string> = {
-    "1": "Fruits & Légumes",
-    "2": "Produits Laitiers",
-    "3": "Céréales & Féculents",
-    "4": "Viandes & Poissons",
-    "5": "Produits Sucrés",
-    "6": "Boissons",
-    "7": "Autre",
+const productCategories: Record<string, object> = {
+    1: {'name': 'Fruits & Légumes', 'icon': 'fa-solid fa-carrot'},
+    2: {'name': 'Produits Laitiers', 'icon': 'fa-solid fa-cheese'},
+    3: {'name': 'Céréales & Féculents', 'icon': 'fa-solid fa-wheat-awn'},
+    4: {'name': 'Viandes & Poissons', 'icon': 'fa-solid fa-drumstick-bite'},
+    5: {'name': 'Produits Sucrés', 'icon': 'fa-solid fa-cookie-bite'},
+    6: {'name': 'Boissons', 'icon': 'fa-solid fa-bottle-water'},
+    7: {'name': 'Autre', 'icon': 'fa-solid fa-shopping-basket'},
 };
 
-export { selectBestCategory, productCategories, type ClassificationResult };
+export {selectBestCategory, productCategories, type ClassificationResult};

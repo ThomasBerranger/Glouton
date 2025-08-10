@@ -53,8 +53,7 @@ onMounted((): void => {
     <div v-for="(product, index) in shoppingListProducts" :key="product.id">
       <div v-if="index === 0 || product.category.id !== shoppingListProducts[index - 1]?.category.id"
            class="flex items-center text-lg mt-1 mb-2">
-<!--        todo: trouver le bon icon -->
-        <font-awesome-icon icon="fa-solid fa-carrot"/>
+        <font-awesome-icon :icon="productCategories[product.category.id].icon"/>
         <p class="ml-1">{{ product.category.name }}</p>
       </div>
 

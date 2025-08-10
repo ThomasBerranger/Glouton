@@ -165,17 +165,17 @@ onMounted((): void => {
         <p class="text-xl font-light mt-3">Image (url)</p>
         <input v-model="newProduct.image" class="w-3/4 border border-green-800 rounded px-2 py-1" type="text">
         <img v-if="newProduct.image" :src="newProduct.image" class="h-32 m-auto" :alt="newProduct.name">
-
-        <div class="flex-row mt-3">
-          <p class="text-xl font-light mt-3">Catégorie</p>
-          <select v-model="newProduct.category" class="w-3/4 p-1.5">
-            <option v-for="(label, id) in productCategories" :value="id" :key="id">{{ label }}</option>
-          </select>
-        </div>
       </div>
     </section>
 
     <section v-if="mode !== 'scanning'" class="mt-1">
+      <div class="flex-row mt-3">
+        <p class="text-xl font-light mt-3">Catégorie</p>
+        <select v-model="newProduct.category" class="w-3/4 p-1.5">
+          <option v-for="(category, id) in productCategories" :value="id" :key="id">{{ category.name }}</option>
+        </select>
+      </div>
+
       <div class="flex-row justify-center">
         <p @click="showDatePicker = true">Dates d'expirations :</p>
         <p v-for="expirationDate in newProduct.expirationDates" class="font-light">
