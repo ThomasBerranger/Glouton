@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 
 const props = defineProps<{
-  novagroup: number | undefined
+  novagroup: number | null | undefined
 }>();
 </script>
 

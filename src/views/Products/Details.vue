@@ -31,13 +31,14 @@ const isToEdit = ref<boolean>(false);
 const showDatePicker = ref<boolean>(false);
 
 const toggleShoppingList = (): void => {
+  product.value.addedToListAt = product.value.addedToListAt ? null : moment().format("L");
+
   axios.patch(
       `${getProductUrlByType(product.value)}/${product.value.id}`,
-      {addedToListAt: product.value.addedToListAt ? null : new Date()},
+      {addedToListAt: product.value.addedToListAt},
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   )
       .then(response => {
-        product.value = response.data;
         if (product.value.addedToListAt) {
           shoppingListCounterStore.addOne();
         } else {
@@ -65,7 +66,6 @@ const edit = (): void => {
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   )
       .then(response => {
-        product.value = response.data;
         isToEdit.value = false;
       })
 };
@@ -171,7 +171,7 @@ onMounted((): void => {
 
     <p class="font-semibold pt-3">Catégorie</p>
     <select v-model="product.category" class="w-full bg-white shadow-md p-2">
-      <option v-for="(label, id) in productCategories" :value="id" :key="id">{{ label }}</option>
+      <option v-for="(category, id) in productCategories" :value="id" :key="id">{{ category.name }}</option>
     </select>
 
     <p class="font-semibold pt-3">Recettes associées</p>

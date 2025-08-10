@@ -29,7 +29,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="screen-height bg-gray-100">
+  <div class="screen-height w-screen bg-gray-100">
 
     <section class="grid grid-cols-4 gap-3 p-3">
       <router-link :to="{name: 'product.details', params: { id: product.id }}"
