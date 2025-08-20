@@ -32,7 +32,7 @@ const productsByCategory = computed((): Record<string, any> => {
         <p class="ml-1">{{ category.name }}</p>
       </div>
 
-      <div class="grid grid-cols-4 gap-3 text-center">
+      <div class="grid grid-cols-4 gap-2 text-center">
         <Card v-for="product in category.products" :product="product" :key="product.id" />
       </div>
     </div>

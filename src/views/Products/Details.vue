@@ -31,7 +31,7 @@ const isToEdit = ref<boolean>(false);
 const showDatePicker = ref<boolean>(false);
 
 const toggleShoppingList = (): void => {
-  product.value.addedToListAt = product.value.addedToListAt ? null : moment().format("L");
+  product.value.addedToListAt = product.value.addedToListAt ? null : moment().format();
 
   axios.patch(
       `${getProductUrlByType(product.value)}/${product.value.id}`,

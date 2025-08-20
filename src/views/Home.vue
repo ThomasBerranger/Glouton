@@ -9,6 +9,7 @@ import {PRODUCT_URL, RECIPE_URL} from "@/constants/api.ts";
 import kitchenImg from '@/assets/kitchen.png'
 import List from "@/components/Recipe/List.vue";
 import Card from "@/components/Product/Card.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 const tokenStore = useTokenStore();
 const products = ref<Product[]>([]);
@@ -30,7 +31,7 @@ onMounted(async () => {
 <template>
   <div class="screen-height w-screen bg-gray-100">
 
-    <section class="grid grid-cols-4 gap-3 p-3">
+    <section class="grid grid-cols-4 gap-2 p-3">
       <Card v-for="product in products" :product="product" :display-title="false" :key="product.id"/>
 
       <router-link
@@ -52,7 +53,12 @@ onMounted(async () => {
       </div>
 
       <div class="px-3">
-        <List :recipes="recipes"/>
+        <router-link v-if="recipes.length <= 0" to="/recipes" class="w-full flex justify-center">
+          <button class="rounded border-2 border-emerald-600 mt-2 py-1 px-3 text-emerald-800">
+            <font-awesome-icon icon="fa-solid fa-plus"/>
+          </button>
+        </router-link>
+        <List v-else :recipes="recipes"/>
       </div>
     </section>
   </div>

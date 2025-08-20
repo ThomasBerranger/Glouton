@@ -8,6 +8,7 @@ import router from "@/router";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {RouterLink} from "vue-router";
 import ExpirationLabel from "@/components/Product/ExpirationLabel.vue";
+import {PRODUCT_ORDER} from "@/constants/productOrder.ts";
 
 const tokenStore = useTokenStore();
 const products = ref<Product[]>([]);
@@ -49,7 +50,7 @@ const postRecipe = (): void => {
 }
 
 onMounted(async () => {
-  axios.get(PRODUCT_URL, {
+  axios.get(`${PRODUCT_URL}?limit=100&order=${PRODUCT_ORDER['all'].order}`, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
   }).then(response => products.value = response.data)
       .catch(error => console.error("Recipe error:", error));
@@ -57,7 +58,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="screen-height w-screen bg-gray-100 p-5">
+  <div class="min-screen-height w-screen bg-gray-100 p-5">
     <div class="flex items-center my-2">
       <p class="flex-shrink-0">Ma nouvelle recette :</p>
       <input v-model="recipeName" type="text" name="name" placeholder="Burritos"
@@ -75,7 +76,7 @@ onMounted(async () => {
           v-for="product in filteredProducts"
           :src="product.image"
           :alt="product.name"
-          :class="[selectedProductIds.includes(product.id) ? 'border-2 border-green-600 p-3 rounded' : '', 'p-1 w-full h-24 shadow-md object-contain']"
+          :class="[selectedProductIds.includes(product.id) ? 'border-2 border-green-600 p-3 rounded' : '', 'bg-white p-1 w-full h-24 shadow-md object-contain']"
           @click="toggleSelectedProductIds(product.id)"
       />
     </div>

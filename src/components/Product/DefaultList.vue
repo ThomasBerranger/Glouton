@@ -8,7 +8,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="grid grid-cols-4 gap-3 pb-32 text-center p-3">
+  <div class="grid grid-cols-4 gap-2 pb-32 text-center p-3">
     <Card v-for="product in products" :product="product" :key="product.id" />
   </div>
 </template>

@@ -6,4 +6,5 @@ export interface Recipe {
     description: string | null;
     duration: string | undefined;
     products: Product[];
+    unavailableProducts: number;
 }

@@ -66,7 +66,6 @@ const fetchData = (): void => {
         newProduct.value.scanned = true;
         newProduct.value.barcode = code.value;
         newProduct.value.name = response.data.product.product_name.charAt(0).toUpperCase() + response.data.product.product_name.slice(1).toLowerCase();
-        ;
 
         newProduct.value.nutriscore = isValidNutriscore(response.data.product.nutriscore_data?.grade) ? response.data.product.nutriscore_data?.grade : null;
         newProduct.value.novagroup = isValidNovaGroup(response.data.product.nova_group) ? response.data.product.nova_group : null;
@@ -142,12 +141,13 @@ onMounted((): void => {
 
     <section v-else-if="mode === 'found'" class="px-5">
 
-      <h1 class="font-semibold text-2xl my-3 text-center">{{ newProduct.name }}</h1>
+      <p class="font-semibold mt-3">Nom</p>
+      <input v-model="newProduct.name" class="w-full border p-2"/>
 
       <p class="font-light">{{ newProduct.description }}</p>
 
       <p class="font-semibold mt-4 mb-3">Image{{ images.length > 1 ? 's' : '' }}</p>
-      <div class="flex justify-evenly mt-2">
+      <div class="grid grid-cols-4 gap-2 mt-2">
         <img
             v-for="image in images" :key="image"
             :src="image" :alt="`${newProduct.name} image`"
