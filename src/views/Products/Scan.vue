@@ -55,6 +55,8 @@ const fetchData = (): void => {
     router.push({
       name: 'product.details',
       params: {id: response.data.id}
+    }).catch(error => {
+      console.log(error);
     })
   });
 

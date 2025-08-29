@@ -65,7 +65,7 @@ onMounted((): void => {
           <font-awesome-icon v-else icon="fa-regular fa-circle" class="text-xl"/>
           <p :class="['ml-2', { 'line-through green-color': removedProducts.includes(product) }]">{{ product.name }}</p>
         </div>
-        <p class="text-sm">2 jours</p>
+        <p class="text-xs tracking-wider">{{ moment(product.addedToListAt).format('DD/MM') }}</p>
       </div>
     </div>
 

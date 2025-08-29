@@ -62,7 +62,11 @@ const remove = (isRemoved: boolean): void => {
 const edit = (): void => {
   axios.patch(
       `${getProductUrlByType(product.value)}/${product.value.id}`,
-      {name: product.value.name, description: product.value.description},
+      {
+        name: product.value.name,
+        description: product.value.description,
+        image: product.value.image,
+      },
       {headers: {Authorization: `Bearer ${tokenStore.token}`}}
   )
       .then(response => {
