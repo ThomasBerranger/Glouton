@@ -26,7 +26,7 @@ onMounted(async () => {
   }).then((response) => {
     recipes.value = response.data.sort((a: Recipe, b: Recipe) =>
         a.unavailableProducts - b.unavailableProducts
-    ).slice(0, 3);
+    ).slice(0, 4);
   })
       .catch(error => console.error("Recipe error:", error));
 });

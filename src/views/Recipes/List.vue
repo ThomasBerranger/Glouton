@@ -3,49 +3,84 @@ import {onMounted, ref} from "vue";
 import axios from "axios";
 import type {Recipe} from "@/interfaces/recipe";
 import {useTokenStore} from "@/stores/token";
-import {RECIPE_URL} from "@/constants/api.ts";
+import {PRODUCT_URL, RECIPE_URL} from "@/constants/api.ts";
 import {RouterLink} from "vue-router";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import kitchenImg from "@/assets/kitchen.png";
+import Confirmation from "@/components/Confirmation.vue";
+import router from "@/router";
 
 const tokenStore = useTokenStore();
 const recipes = ref<Recipe[]>([]);
 
-const removeRecipe = (recipeId: string): void => {
-  axios.delete(`${RECIPE_URL}/${recipeId}`, {
-    headers: {Authorization: `Bearer ${tokenStore.token}`},
-  }).then((): void => {
-    recipes.value = recipes.value.filter(recipe => recipe.id !== recipeId);
-  });
-}
+const recipeToRemove = ref<Recipe | null>(null);
+
+const remove = (isRemoved: boolean): void => {
+  if (isRemoved && recipeToRemove.value) {
+    axios.delete(`${RECIPE_URL}/${recipeToRemove.value.id}`, {
+      headers: {Authorization: `Bearer ${tokenStore.token}`},
+    }).then((): void => {
+      recipes.value = recipes.value.filter(recipe => recipe.id !== recipeToRemove.value?.id);
+      recipeToRemove.value = null;
+    });
+  } else {
+    recipeToRemove.value = null;
+  }
+};
 
 onMounted(async () => {
   axios.get(RECIPE_URL, {
     headers: {Authorization: `Bearer ${tokenStore.token}`},
-  }).then(response => recipes.value = response.data)
+  }).then(response => {
+    recipes.value = response.data.sort((a: Recipe, b: Recipe) =>
+        a.unavailableProducts - b.unavailableProducts
+    )
+  })
       .catch(error => console.error("Recipe error:", error));
 });
 </script>
 
 <template>
-  <div class="screen-height">
-    <ul class="w-screen mt-3 mb-5 p-4">
-      <li class="text-lg font-bold">Recettes disponibles</li>
-      <li v-for="recipe in recipes" class="flex mt-2">
-        <button @click="removeRecipe(recipe.id)" class="rounded font-bold text-red-600 opacity-80 px-1 py-0.5">
-          <font-awesome-icon icon="fa-solid fa-trash"/>
-        </button>
-        <div class="pl-1.5 border-solid border-b-2">
-          <p>{{ recipe.name }} {{ recipe.duration }}</p>
-          <p v-for="product in recipe.products" class="italic">{{ product.name }}</p>
-        </div>
-      </li>
-    </ul>
+  <div class="min-screen-height w-screen p-4">
 
-    <div class="flex justify-center">
-      <router-link
-          to="/create-recipe"
-          class="p-2 rounded text-white font-semibold bg-green-600 opacity-60"
-      >Ajouter une nouvelle recette
+    <div v-for="recipe in recipes" class="mb-5">
+      <div class="flex justify-between bg-white shadow-md mb-2 p-2">
+        <div class="pr-2">{{ recipe.name }}</div>
+        <div class="flex items-center gap-2">
+
+          <div v-if="recipe.products?.length >= 0"
+               :class="[ recipe.unavailableProducts <= 0 ? 'border-emerald-600 green-color' : 'border-red-400 text-red-400'
+              ,'flex items-center font-semibold text-sm border border-1 rounded px-1.5 h-6']">
+            {{ recipe.products.length - recipe.unavailableProducts }} / {{ recipe.products.length }}
+            <font-awesome-icon icon="fa-solid fa-basket-shopping" class="ml-1"/>
+          </div>
+
+          <div class="flex items-center rounded text-sm px-1.5 h-6 tracking-wider">
+            {{ recipe.duration?.slice(0, -3) }}
+          </div>
+
+          <button @click="recipeToRemove = recipe" class="text-red-400 opacity-80 px-1 py-0.5">
+            <font-awesome-icon icon="fa-solid fa-trash"/>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 mx-1 mb-1">
+        <router-link :to="{name: 'product.details', params: { id: product.id }}" v-for="product in recipe.products">
+          <font-awesome-icon :icon="`fa-solid ${product.closestExpirationDate ? 'fa-check' : 'fa-xmark'}`"/>
+          {{ product.name }}
+        </router-link>
+      </div>
+    </div>
+
+    <div class="mt-10 w-full text-center">
+      <router-link to="/create-recipe" class="green-background text-white rounded px-3 py-1.5 mb-38">
+        Nouvelle recette
       </router-link>
     </div>
+
+    <Confirmation v-if="recipeToRemove" @closeConfirmation="remove"
+                  :body="`Veux-tu retirer <span class='font-semibold'>${recipeToRemove.name}</span> de la liste de tes recettes enregistrées ?`"/>
   </div>
+
 </template>

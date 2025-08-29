@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 
-import type {Product} from "@/interfaces/product.ts";
-
 const props = defineProps<{
-  product: Product,
   body: string
 }>();
 
