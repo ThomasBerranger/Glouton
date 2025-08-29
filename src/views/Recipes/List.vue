@@ -3,21 +3,30 @@ import {onMounted, ref} from "vue";
 import axios from "axios";
 import type {Recipe} from "@/interfaces/recipe";
 import {useTokenStore} from "@/stores/token";
-import {RECIPE_URL} from "@/constants/api.ts";
+import {PRODUCT_URL, RECIPE_URL} from "@/constants/api.ts";
 import {RouterLink} from "vue-router";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import kitchenImg from "@/assets/kitchen.png";
+import Confirmation from "@/components/Confirmation.vue";
+import router from "@/router";
 
 const tokenStore = useTokenStore();
 const recipes = ref<Recipe[]>([]);
 
-const removeRecipe = (recipeId: string): void => {
-  axios.delete(`${RECIPE_URL}/${recipeId}`, {
-    headers: {Authorization: `Bearer ${tokenStore.token}`},
-  }).then((): void => {
-    recipes.value = recipes.value.filter(recipe => recipe.id !== recipeId);
-  });
-}
+const recipeToRemove = ref<Recipe | null>(null);
+
+const remove = (isRemoved: boolean): void => {
+  if (isRemoved && recipeToRemove.value) {
+    axios.delete(`${RECIPE_URL}/${recipeToRemove.value.id}`, {
+      headers: {Authorization: `Bearer ${tokenStore.token}`},
+    }).then((): void => {
+      recipes.value = recipes.value.filter(recipe => recipe.id !== recipeToRemove.value?.id);
+      recipeToRemove.value = null;
+    });
+  } else {
+    recipeToRemove.value = null;
+  }
+};
 
 onMounted(async () => {
   axios.get(RECIPE_URL, {
@@ -50,7 +59,7 @@ onMounted(async () => {
             {{ recipe.duration?.slice(0, -3) }}
           </div>
 
-          <button @click="removeRecipe(recipe.id)" class="text-red-400 opacity-80 px-1 py-0.5">
+          <button @click="recipeToRemove = recipe" class="text-red-400 opacity-80 px-1 py-0.5">
             <font-awesome-icon icon="fa-solid fa-trash"/>
           </button>
         </div>
@@ -69,6 +78,9 @@ onMounted(async () => {
         Nouvelle recette
       </router-link>
     </div>
+
+    <Confirmation v-if="recipeToRemove" @closeConfirmation="remove"
+                  :body="`Veux-tu retirer <span class='font-semibold'>${recipeToRemove.name}</span> de la liste de tes recettes enregistrées ?`"/>
   </div>
 
 </template>

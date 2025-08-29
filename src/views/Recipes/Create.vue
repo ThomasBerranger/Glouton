@@ -66,7 +66,6 @@ const postRecipe = (): void => {
 }
 
 const handleScroll = (): void => {
-  // Désactiver le scroll infini pendant la recherche
   if (isLoading.value || !hasMoreProducts.value || debouncedTerm.value) return;
 
   const scrollTop = window.scrollY;
