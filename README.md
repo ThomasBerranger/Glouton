@@ -2,139 +2,93 @@
   <a href="https://glouton-1.web.app">
       <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/0e3494c1-36f9-492d-be39-586d18905de7" alt="Glouton logo" title="Glouton" />
   </a>
-
-Glouton est une application visant à réduire le gaspillage alimentaire 🍏
-<br>
-Elle vous permet de mieux gérer votre garde-manger et éviter de perdre des aliments périmés.
-<br>
-<a href="https://glouton-1.web.app">Pourquoi ne pas essayer ?</a>
 </div>
 
-## Projet
+<br>
 
-<div align="center">
+<img src="https://github.com/user-attachments/assets/b7d4677b-ab8f-4ed9-ba19-46f81804ed46" width="300" align="right" style="margin-right: 20px;" />
 
-![navigation](https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/25fd6d83-af48-4d86-98ab-c44bd7fae2d5)
+### 🍏 Glouton - Anti-gaspillage intelligent
 
-</div>
+Votre compagnon digital pour une cuisine organisée et zéro gaspillage.
+
+Scannez, cuisinez, gérez et surveillez les dates de péremption de vos aliments favoris avec l'application **Glouton**.
+
+✨ **Fonctionnalités clés :**
+- Scan et enregistrement de produits par code-barres
+- Suivi des dates d'expiration automatique  
+- Génération de listes de courses intelligentes
+- Création et proposition de recettes avec les ingrédients disponibles
+- Accès aux informations nutritionnelles détaillées
+- Interface mobile-first responsive multi-appareils
+
+<br clear="left" />
+
+### 🛠 Stack Technique Détaillée
+
+| Catégorie | Technologies |
+|-----------|--------------|
+| **Core Framework** | Vue.js 3.5.13 (composition API) + TypeScript 5.7.3<br>Vite 5.4.14 (build tool)<br>Vue Router 4.5.0 (routing + navigation guards)<br>Pinia 2.3.1 (state management) |
+| **PWA & Performance** | vite-plugin-pwa 0.17.5 (service workers + manifest)<br>Workbox 7.0 (cache strategies + offline)<br>@vitejs/plugin-vue 5.0.4 (SFC compilation) |
+| **Scan & Métier** | html5-qrcode 2.3.8 (scan principal)<br>@zxing/library 0.21.3 + @zxing/browser 0.1.5 (décodage avancé)<br>axios 1.7.9 (HTTP client + interceptors)<br>moment.js 2.29.4 (dates françaises)<br>Chart.js 4.4.7 (graphiques) |
+| **UI & Styling** | Tailwind CSS 3.3.2 (utility-first + responsive)<br>@fortawesome/vue-fontawesome 3.0.3 (icônes) |
+
+### 📋 Roadmap
 
 <details>
-  <summary>Authentification</summary>
-  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/fe36c22e-0e2f-457c-af2d-adc64802d12a">
+  <summary>Création du projet Vue.js x Vite</summary><br>
+  Configuration PWA complète (service workers, manifest)<br>
+  Création des premières interfaces responsive TailwindIntégration FontAwesome<br>
+  Intégration de FontAwesome et des icons nécessaires
 </details>
+
 <details>
-  <summary>Scan d'un article</summary>
-  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/7ff29b0b-7adb-4f6f-89b6-a5f4107bbcd6">
-  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/c5fb10c0-5216-4195-b460-a51d105e9b17"> 
+  <summary>Gestion des aliments pour utilisateurs</summary><br>
+  Utilisation de token JWT et protection des routes<br>
+  Intégration du scan de code-barres<br>
+  Recherhe de donneés sur l'api OpenFoodFact<br>
+  Création d'un composant datepicker polyvalent<br>
+  Enregistrement d'un produit lié à l'utiliasteur connecté (POST)<br> 
+  Affichage de la liste des produits liés à l'utilsateur connecté (GET collection)<br>
+  Modification des informations liées à un produit sélectionné (GET & PATCH)<br>
+  Affichage des données nutrionnelles<br>
+  Création d'un modale de confirmation polyvalente<br>
+  Suppression d'un produit après validation (DELETE)<br>
 </details>
+
 <details>
-  <summary>Modification d'un article</summary>
-  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/f3a3a5e4-ca0b-4904-9213-9cf80f3c0dfc">
+  <summary>Création de la liste de course</summary><br>
+  Affichage des produits liés à l'utilisateur et ajoutés à la liste de course (GET collection)<br>
+  Ajout d'un bouton sur les produits afin de les ajouter / retirer à la liste de course (PATCH)<br>
+  Affichage du nombre de produit sur la liste depuis le Footer (GET collection)<br>
 </details>
+
 <details>
-  <summary>Liste de course</summary>
-  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/dfded788-0a87-4045-bb61-73db1641f10d">
+  <summary>Design & UI/UX</summary><br>
+  Customisation de la Homepage (affichage des produits bientôt périmés et des futures recettes)<br>
+  Création d'une interface polyvalentes affichant tous les produits enregistrés (GET collection)<br>
+  Création de plusieurs modes d'affichage<br>
 </details>
 
-## Les composants du projet
+<details>
+  <summary>Gestion des recettes</summary><br>
+  Création de recette depuis une interface permettant d'ajouter les produits concernés et les informations nécessaires (POST)<br>
+  Affichage sur la Homepage des recettes en fonction des aliments requis (GET collection)<br>
+  Affichage de la liste (GET collection)<br>
+  Suppression après confirmation d'une recette (DELETE)
+</details>
 
-💾 Mise à jour en cours
+<details>
+  <summary>Améliorations futures</summary><br>
+  Proposition de recette par une IA en fonction des produits présents<br>
+  Connexion aux APIs de supermarché pour facilité la commande d'aliments<br>
+  Notifications Push en cas de risque de gaspillage<br>
+  Gamification de l'application<br>
+  Analyse des dépenses personnelles<br>
+  Partage de recettes entre utilisateurs<br>
+  Alternatives santé pour éviter les produits trop transformé et non écologique<br>
+</details>
 
-[//]: # (<a href="https://vuejs.org/"><img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/c4f8d90b-ef06-44ae-9778-4ed0c99ebae6" alt="Vue.js logo" width="120" height="40"></a>)
-
-[//]: # ()
-[//]: # (Glouton est une application web Vue.js 3.)
-
-[//]: # (La gestion du store et les appels à l'API sont réalisés via vuex et le routing de l'application est pris en charge par vue router.)
-
-[//]: # ()
-[//]: # (<a href="https://firebase.google.com/"><img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/31f9b051-7324-43b5-b766-1770441a20cc" alt="Firebase logo" width="140" height="50"></a>)
-
-[//]: # ()
-[//]: # (Le stockage des données, l'authentification et l'hébergement du projet sont rendus possibles grâce aux services proposés par Firebase.)
-
-[//]: # ()
-[//]: # (<ul>)
-
-[//]: # (<li>)
-
-[//]: # (<a href="https://fontawesome.com/">Fontawesome</a> pour les icons de l'application.)
-
-[//]: # (</li>)
-
-[//]: # ()
-[//]: # (<li>)
-
-[//]: # (Le package <a href="https://github.com/mebjas/html5-qrcode">html5-qrcode</a> pour l'utilisation de la caméra et la d'tection de code-barres.)
-
-[//]: # (</li>)
-
-[//]: # ()
-[//]: # (<li>)
-
-[//]: # (Le framework css <a href="https://tailwindcss.com">Tailwind</a> et tw-element pour la réalisation d'un visuel professionel et responsive.)
-
-[//]: # (</li>)
-
-[//]: # ()
-[//]: # (<li>)
-
-[//]: # (L'outil de construction <a href="https://vitejs.dev/guide">Vite</a> et du package <a href="https://vite-pwa-org.netlify.app">vite-plugin-pwa</a> pour la construction d'une Progressive Web App optimisée.)
-
-[//]: # (</li>)
-
-[//]: # ()
-[//]: # (<li>)
-
-[//]: # (Le package <a href="https://momentjs.com">Moment.js</a> pour le traitement et la conversion des dates.)
-
-[//]: # (</li>)
-
-[//]: # ()
-[//]: # (<li>)
-
-[//]: # (Le package <a href="https://ismail9k.github.io/vue3-carousel">Vue3-carousel</a> pour la navigation horizontal.)
-
-[//]: # (</li>)
-
-[//]: # (</ul>)
-
-## Roadmap
-
-- [x] Création du projet Vue.js x Vite
-- [x] Création du compte firebase
-- [x] Configuration PWA
-- [x] Création des interfaces
-- [x] Création du datepicker
-- [x] Intégration du scan de code-barres
-- [x] Création des appels API aux services Firebase
-- [x] Configuration du store
-- [x] Intégration de vue3-carousel
-- [ ] Correction du bug de scan sur Iphone
-- [ ] Utilisation de l'API Laravel une fois prête
-- [ ] Ajout d'articles sans code-barres
-- [ ] Création des recettes
-
-## Comment faire tourner en local Glouton
-
-```sh
-npm install
-
-npm install -g firebase-tools
-firebase login
-firebase init
-
-npm run dev
-```
-
-## Contact
+### 📬 Contact
 
 Thomas Berranger - <a href="https://www.linkedin.com/in/thomas-berranger/">Linkedin</a> - tberranger@hotmail.fr
-
-<!-- 🥚
-Commandes pour la mise en production
-```
-npm run build
-firebase deploy
-```
--->
