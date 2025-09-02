@@ -6,7 +6,7 @@
 
 <br>
 
-<img src="https://github.com/user-attachments/assets/b7d4677b-ab8f-4ed9-ba19-46f81804ed46" width="300" align="right" style="margin-right: 20px;" />
+<img src="https://github.com/user-attachments/assets/d08c6b74-380e-40fa-ba62-1a07cb9051ff" width="300" align="right" style="margin-right: 20px;" />
 
 ### 🍏 Glouton - Anti-gaspillage intelligent
 
