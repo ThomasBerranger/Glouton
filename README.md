@@ -121,6 +121,14 @@ https://github.com/user-attachments/assets/0eee01b2-d60f-410b-b1b3-4ade82f64a9e
 
 **Compteur temps réel :** Store Pinia maintenant la cohérence entre l'affichage du compteur en footer et les actions utilisateur. Synchronisation automatique via appels API au montage des composants et mise à jour incrémentale lors des ajouts/retraits.
 
+### 📱 Recettes
+
+https://github.com/user-attachments/assets/618d7c35-74bc-4034-a86b-b1e9ae2faf6e
+
+**Création d'une recette :** Interface avec un scroll chargeant les aliments de l'utilisateur. Barre de recherche filtrant par nom de produit.
+
+**Indicateurs de disponibilité :** Affichage du nombre d'aliments manquants sur chaque recette de la liste, permettant priorisation des recettes réalisables.
+
 ### 📬 Contact
 
 Thomas Berranger - <a href="https://www.linkedin.com/in/thomas-berranger/">Linkedin</a> - tberranger@hotmail.fr
