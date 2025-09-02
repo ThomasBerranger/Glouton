@@ -89,6 +89,21 @@ Scannez, cuisinez, gérez et surveillez les dates de péremption de vos aliments
   Alternatives santé pour éviter les produits trop transformé et non écologique<br>
 </details>
 
+
+### Scan de code-barres
+
+https://github.com/user-attachments/assets/4028cbc7-2837-4f89-a62b-b812333e2556
+
+**Architecture technique :** Utilisation de `@zxing/browser` pour décoder les codes-barres en temps réel depuis le flux vidéo de la caméra. Le BrowserMultiFormatReader analyse les frames vidéo continuellement jusqu'à détection d'un motif valide.
+
+**Pipeline de données :** Une fois le code-barres détecté, appel automatique à l'API OpenFoodFacts pour récupérer les informations produit (nom, scores nutritionnels, images). Les données sont normalisées et validées avant affichage.
+
+**Gestion d'états :** Trois modes via Vue 3 reactivity - scanning (caméra active), found (produit trouvé), manual (saisie manuelle). Transitions automatiques selon le résultat de détection.
+
+**Optimisations UX :** Vérification préalable en base locale avant appel externe, mode fallback pour produits non référencés, personnalisation des textes d'interface via manipulation DOM.
+
+**Permissions navigateur :** Gestion des autorisations caméra avec interface dédiée et messages d'erreur explicites en cas de refus ou indisponibilité.
+
 ### 📬 Contact
 
 Thomas Berranger - <a href="https://www.linkedin.com/in/thomas-berranger/">Linkedin</a> - tberranger@hotmail.fr
