@@ -38,7 +38,7 @@ Scannez, cuisinez, gérez et surveillez les dates de péremption de vos aliments
 <details>
   <summary>Création du projet Vue.js x Vite</summary><br>
   Configuration PWA complète (service workers, manifest)<br>
-  Création des premières interfaces responsive TailwindIntégration FontAwesome<br>
+  Création des premières interfaces responsive avec le framework CSS Tailwind<br>
   Intégration de FontAwesome et des icons nécessaires
 </details>
 
@@ -46,12 +46,12 @@ Scannez, cuisinez, gérez et surveillez les dates de péremption de vos aliments
   <summary>Gestion des aliments pour utilisateurs</summary><br>
   Utilisation de token JWT et protection des routes<br>
   Intégration du scan de code-barres<br>
-  Recherhe de donneés sur l'api OpenFoodFact<br>
+  Recherche de donneés sur l'api OpenFoodFact<br>
   Création d'un composant datepicker polyvalent<br>
   Enregistrement d'un produit lié à l'utiliasteur connecté (POST)<br> 
-  Affichage de la liste des produits liés à l'utilsateur connecté (GET collection)<br>
+  Affichage de la liste des produits liés à l'utilisateur connecté (GET collection)<br>
   Modification des informations liées à un produit sélectionné (GET & PATCH)<br>
-  Affichage des données nutrionnelles<br>
+  Affichage des données nutritionnelles<br>
   Création d'un modale de confirmation polyvalente<br>
   Suppression d'un produit après validation (DELETE)<br>
 </details>
@@ -81,7 +81,7 @@ Scannez, cuisinez, gérez et surveillez les dates de péremption de vos aliments
 <details>
   <summary>Améliorations futures</summary><br>
   Proposition de recette par une IA en fonction des produits présents<br>
-  Connexion aux APIs de supermarché pour facilité la commande d'aliments<br>
+  Connexion aux APIs de supermarché pour faciliter la commande d'aliments<br>
   Notifications Push en cas de risque de gaspillage<br>
   Gamification de l'application<br>
   Analyse des dépenses personnelles<br>
@@ -117,7 +117,7 @@ https://github.com/user-attachments/assets/0eee01b2-d60f-410b-b1b3-4ade82f64a9e
 
 **Ajout/retrait contextuel :** Bouton toggle avec états visuels différenciés intégré aux fiches produits. Modification du statut via requête API sur le timestamp d'ajout.
 
-**Interface dédiée :** Page shopping list affichant uniquement les produits ajoutés. Tri chronologique par date d'ajout via endpoint dédié. Le but est de permettre à l'utilisateur de facilement modifier sa liste de course pendant ses achats.
+**Interface dédiée :** Page shopping list affichant uniquement les produits ajoutés. Tri chronologique par date d'ajout via endpoint dédié. Le but est de permettre à l'utilisateur de facilement modifier sa liste de course lors de ses achats.
 
 **Compteur temps réel :** Store Pinia maintenant la cohérence entre l'affichage du compteur en footer et les actions utilisateur. Synchronisation automatique via appels API au montage des composants et mise à jour incrémentale lors des ajouts/retraits.
 
@@ -125,7 +125,7 @@ https://github.com/user-attachments/assets/0eee01b2-d60f-410b-b1b3-4ade82f64a9e
 
 https://github.com/user-attachments/assets/618d7c35-74bc-4034-a86b-b1e9ae2faf6e
 
-**Création d'une recette :** Interface avec un scroll chargeant les aliments de l'utilisateur. Barre de recherche filtrant par nom de produit.
+**Création d'une recette :** Interface avec un infinite scroll chargeant les aliments de l'utilisateur. Barre de recherche filtrant par nom de produit.
 
 **Indicateurs de disponibilité :** Affichage du nombre d'aliments manquants sur chaque recette de la liste, permettant priorisation des recettes réalisables.
 
