@@ -10,9 +10,13 @@
 
 ### 🍏 Glouton - Anti-gaspillage intelligent
 
+<br>
+
 Votre compagnon digital pour une cuisine organisée et zéro gaspillage.
 
 Scannez, cuisinez, gérez et surveillez les dates de péremption de vos aliments favoris avec l'application **Glouton**.
+
+<br>
 
 ✨ **Fonctionnalités clés :**
 - Scan et enregistrement de produits par code-barres
@@ -22,9 +26,10 @@ Scannez, cuisinez, gérez et surveillez les dates de péremption de vos aliments
 - Accès aux informations nutritionnelles détaillées
 - Interface mobile-first responsive multi-appareils
 
+<br>
 <br clear="left" />
 
-### 🛠 Stack Technique Détaillée
+### 🛠 Stack Technique 
 
 | Catégorie | Technologies |
 |-----------|--------------|
