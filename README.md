@@ -89,8 +89,7 @@ Scannez, cuisinez, gérez et surveillez les dates de péremption de vos aliments
   Alternatives santé pour éviter les produits trop transformé et non écologique<br>
 </details>
 
-
-### Scan de code-barres
+### 📱 Scan de code-barres
 
 https://github.com/user-attachments/assets/4028cbc7-2837-4f89-a62b-b812333e2556
 
@@ -103,6 +102,24 @@ https://github.com/user-attachments/assets/4028cbc7-2837-4f89-a62b-b812333e2556
 **Optimisations UX :** Vérification préalable en base locale avant appel externe, mode fallback pour produits non référencés, personnalisation des textes d'interface via manipulation DOM.
 
 **Permissions navigateur :** Gestion des autorisations caméra avec interface dédiée et messages d'erreur explicites en cas de refus ou indisponibilité.
+
+### 📱 Affichage polyvalent des aliments
+
+https://github.com/user-attachments/assets/d1cac01c-750d-420a-883d-391349576bdc
+
+**Affichage ordonné :** Liste des produits triable par catégories ou vue globale. Les 7 catégories (Fruits & Légumes, Produits Laitiers, etc.) sont extraites d'OpenFoodFacts et assignées automatiquement via algorithme de matching sur les tags produits.
+
+**Filtres transversaux :** Filtrage par dates d'expiration, statut liste de course, et catégories. Ces filtres s'appliquent uniformément quel que soit le mode d'affichage sélectionné.
+
+### 📱 Liste de courses
+
+https://github.com/user-attachments/assets/0eee01b2-d60f-410b-b1b3-4ade82f64a9e
+
+**Ajout/retrait contextuel :** Bouton toggle avec états visuels différenciés intégré aux fiches produits. Modification du statut via requête API sur le timestamp d'ajout.
+
+**Interface dédiée :** Page shopping list affichant uniquement les produits ajoutés. Tri chronologique par date d'ajout via endpoint dédié. Le but est de permettre à l'utilisateur de facilement modifier sa liste de course pendant ses achats.
+
+**Compteur temps réel :** Store Pinia maintenant la cohérence entre l'affichage du compteur en footer et les actions utilisateur. Synchronisation automatique via appels API au montage des composants et mise à jour incrémentale lors des ajouts/retraits.
 
 ### 📬 Contact
 
