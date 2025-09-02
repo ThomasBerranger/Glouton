@@ -33,7 +33,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="screen-height w-screen bg-gray-100">
+  <div class="min-screen-height w-screen bg-gray-100">
 
     <section class="grid grid-cols-4 gap-2 p-3">
       <Card v-for="product in products" :product="product" :display-title="false" :key="product.id"/>
@@ -56,7 +56,7 @@ onMounted(async () => {
         </router-link>
       </div>
 
-      <div class="px-3">
+      <div class="px-3 pb-22">
         <router-link v-if="recipes.length <= 0" to="/recipes" class="w-full flex justify-center">
           <button class="rounded border-2 border-emerald-600 mt-2 py-1 px-3 text-emerald-800">
             <font-awesome-icon icon="fa-solid fa-plus"/>
