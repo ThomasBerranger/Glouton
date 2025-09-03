@@ -8,7 +8,7 @@
 
 <img src="https://github.com/user-attachments/assets/d08c6b74-380e-40fa-ba62-1a07cb9051ff" width="300" align="right" style="margin-right: 20px;" />
 
-### 🍏 Glouton - Anti-gaspillage intelligent
+### 🍏 Glouton - Scannez, mangez, ne gaspillez plus
 
 <br>
 
@@ -20,9 +20,10 @@ Scannez, cuisinez, gérez et surveillez les dates de péremption de vos aliments
 
 ✨ **Fonctionnalités clés :**
 - Scan et enregistrement de produits par code-barres
-- Suivi des dates d'expiration automatique  
-- Génération de listes de courses intelligentes
-- Création et proposition de recettes avec les ingrédients disponibles
+- Suivi des dates d'expiration automatique
+- Gestion de son garde manger
+- Génération de listes de courses
+- Proposition de recettes avec les ingrédients disponibles
 - Accès aux informations nutritionnelles détaillées
 - Interface mobile-first responsive multi-appareils
 
