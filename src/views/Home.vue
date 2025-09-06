@@ -33,7 +33,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-screen-height w-screen bg-gray-100">
+  <div class="min-screen-height w-screen bg-gray-100 pb-24">
 
     <section class="grid grid-cols-4 gap-2 p-3">
       <Card v-for="product in products" :product="product" :display-title="false" :key="product.id"/>

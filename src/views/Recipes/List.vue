@@ -41,7 +41,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-screen-height w-screen p-4 pb-22">
+  <div class="min-screen-height w-screen p-4 pb-24">
 
     <div v-for="recipe in recipes" class="mb-5">
       <div class="flex justify-between bg-white shadow-md mb-2 p-2">
